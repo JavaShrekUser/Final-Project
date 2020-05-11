@@ -3,7 +3,8 @@ let config = {
     type: Phaser.CANVAS,
     width: 640,
     height: 480,
-    scene: [ Menu, BgStory, Play ]
+    scene: [ Menu, ]
+    // scene: [ Menu, Level1 ]
 }
 
 // main game object
@@ -11,8 +12,7 @@ let game = new Phaser.Game(config);
 
 // define game settings
 game.settings = {
-    fishSpeed: 2.5,
-    gameTimer: 30000  
+    moveSpeed: 2,
 }
 
 // reserve keyboard vars
