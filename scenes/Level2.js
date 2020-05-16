@@ -3,12 +3,25 @@ class Level2 extends Phaser.Scene {
         super("level2Scene");
     }
 
+    preload(){
+        this.load.image('color', './assets/level2/color.png');
+        this.load.image('bg4', './assets/level2/basicBack2.png');
+        this.load.image('door','./assets/level1/beer.png');
+        this.load.audio('choco','./assets/sound/BGM.mp3');
+        this.load.audio('walk', './assets/sound/Walk.mp3');
+        this.load.audio('jump', './assets/sound/Jump.mp3');
+        this.load.audio('levelup', './assets/sound/LevelUp.mp3');
+        this.load.audio('bounce', './assets/sound/Bounce.mp3');
+        // this.load.image('door','./assets/level1/beer.png');
+
+    }
+
     create() {
         // variables and settings
         this.ACCELERATION = 500;
         this.MAX_X_VEL = 500;   // pixels/second
         this.MAX_Y_VEL = 5000;
-        this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
+        this.DRAG = 5000;    // DRAG < ACCELERATION = icy slide
         this.JUMP_VELOCITY = -1000;
         this.physics.world.gravity.y = 3500;
 
@@ -75,12 +88,26 @@ class Level2 extends Phaser.Scene {
         // set up robot
         this.robot = this.physics.add.sprite(game.config.width / 2, game.config.height / 2, 'player').setScale(SCALE);
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
+        this.robot.setCollideWorldBounds(true);
+        this.robot.setDepth(99999);
+
+        //色块
+        this.color = new Color(this, 573, 45, 'color').setOrigin(0, 0);
+        this.color.setDepth(99999);
+
+        //门
+        // this.door = new Door(this, 580, 349, 'door').setOrigin(0, 0);
+        // this.door.setDepth(99999);
 
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         // add physics collider
         this.physics.add.collider(this.robot, this.ground);
+
+        // this.gameOver = false;
+        // this.door.alpha = 0;
 
         // 快速切换关卡 方便测试
         this.input.keyboard.on('keydown', (event) => {
@@ -98,15 +125,35 @@ class Level2 extends Phaser.Scene {
     }
 
     update() {
+
+        this.robot.update();         // update player sprite
+        this.color.update();
+        // this.door.update(); 
+
+         // check collisions
+         if (this.checkCollision(this.robot, this.color)) {
+            this.colorExplode(this.color); 
+            // this.door.alpha = 1;
+            // this.robotExplode(this.robot.x,this.robot.y);
+        }
+
+        // if (this.checkCollision(this.robot, this.door)) {
+        //     // this.doorExplode(this.door); 
+        //     // this.robotExplode(this.robot.x,this.robot.y);
+        // }
+
         // check keyboard input
         if (cursors.left.isDown) {
             this.robot.body.setAccelerationX(-this.ACCELERATION);
+            this.robot.body.setBounceX(1);
             this.robot.setFlip(true, false);
             // see: https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.Animation.html#play__anchor
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
             this.robot.body.setAccelerationX(this.ACCELERATION);
+            this.robot.body.setBounceX(1);
+
             this.robot.resetFlip();
             //this.robot.anims.play('walk', true);
         } else {
@@ -117,16 +164,48 @@ class Level2 extends Phaser.Scene {
         }
 
         // jump
-        if (!this.robot.body.touching.down) {
-            //this.robot.anims.play('jump', true);
-        }
         // use JustDown to avoid "pogo" jumps if you player keeps the up key held down
         // note: there is unfortunately no .justDown property in Phaser's cursor object
         if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
+            this.sound.play('jump');
+        }
+        // if(this.robot.body.touching.left || this.robot.body.touching.right){
+        //     this.physics.world.gravity.y = -(this.physics.world.gravity.y)
+            
+        // }
+
+        if(Phaser.Input.Keyboard.JustDown(keyR)){     //重力反转
+            this.physics.world.gravity.y = -(this.physics.world.gravity.y);
         }
 
         // wrap physics object(s) .wrap(gameObject, padding)
         this.physics.world.wrap(this.robot, this.robot.width / 2);
     }
+
+    checkCollision(robot, obstacle) {
+        // simple AABB checking
+        if (robot.x < obstacle.x + obstacle.width &&
+            robot.x + robot.width > obstacle.x &&
+            robot.y < obstacle.y + obstacle.height &&
+            robot.height + robot.y > obstacle.y) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+        //障碍物爆炸
+    colorExplode(obstacle){
+        //temporarily hide obstacle
+        obstacle.alpha = 0;
+        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg4').setOrigin(0, 0);
+        
+    }
+
+    // doorExplode(obstacle){
+    //     obstacle.alpha = 0;
+    //     this.scene.start('level2Scene');
+        
+    // }
 }
