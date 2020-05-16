@@ -24,6 +24,6 @@ let config = {
     scene: [ Menu, Load, Level1, Level2 ]
 };
 // reserve keyboard vars
-let keyRIGHT;
+let keyRIGHT,keyR;
 
 let game = new Phaser.Game(config);
