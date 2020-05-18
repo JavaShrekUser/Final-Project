@@ -1,3 +1,12 @@
+/*
+Main Programmer:          
+Abudula Aisikaer
+Zihan Guo
+
+Art and a little Program: 
+Logan Park 
+*/
+
 "use strict";
 
 // global variables
