@@ -4,7 +4,7 @@ class Level1 extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('black', './assets/level1/black.png');
+        this.load.image('black', './assets/level1/black.png');      //preload assets
         this.load.image('bg3', './assets/level1/basicBack2.png');
         this.load.image('door','./assets/level1/door.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
@@ -17,7 +17,7 @@ class Level1 extends Phaser.Scene {
 
     create() {
 
-        this.bgm = this.sound.add('choco',{
+        this.bgm = this.sound.add('choco',{     //add background music
             mute : false,
             volume : 0.5,
             rate : 3,
@@ -34,7 +34,6 @@ class Level1 extends Phaser.Scene {
         this.physics.world.gravity.y = 3500;
 
         // set bg
-        // this.cameras.main.setBackgroundColor("#227B96");
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg1').setOrigin(0, 0);
 
         // print Scene name
@@ -93,7 +92,7 @@ class Level1 extends Phaser.Scene {
         this.color.setDepth(99999);
 
         //door
-        this.door = new Door(this, 580, 349, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 0, 'door').setOrigin(0, 0);
         this.door.setDepth(99999);
         
 
@@ -108,18 +107,18 @@ class Level1 extends Phaser.Scene {
         this.door.alpha = 0;
 
         // cheater for debugging
-        this.input.keyboard.on('keydown', (event) => {
-            switch (event.key) {
-                case '1':
-                    this.scene.start("level1Scene");
-                    break;
-                case '2':
-                    this.scene.start("level2Scene");
-                    break;
-                default:
-                    break;
-            }
-        });
+        // this.input.keyboard.on('keydown', (event) => {
+        //     switch (event.key) {
+        //         case '1':
+        //             this.scene.start("level1Scene");
+        //             break;
+        //         case '2':
+        //             this.scene.start("level2Scene");
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // });
 
     }
 
@@ -147,7 +146,6 @@ class Level1 extends Phaser.Scene {
             // this.sound.play('walk');
             this.robot.body.setBounceX(1);
             this.robot.setFlip(true, false);
-            // see: https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.Animation.html#play__anchor
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
@@ -166,8 +164,6 @@ class Level1 extends Phaser.Scene {
         }
 
         // jump
-        // use JustDown to avoid "pogo" jumps if you player keeps the up key held down
-        // note: there is unfortunately no .justDown property in Phaser's cursor object
         if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
@@ -195,10 +191,11 @@ class Level1 extends Phaser.Scene {
         //temporarily hide obstacle
         obstacle.alpha = 0;
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
+        this.door.y = 349;
         
     }
 
-    doorExplode(obstacle){
+    doorExplode(obstacle){    // change level 
         obstacle.alpha = 0;
         this.sound.play('levelup');
         this.scene.start('level2Scene');

@@ -4,7 +4,7 @@ class Level2 extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('green', './assets/level2/green.png');
+        this.load.image('green', './assets/level2/green.png');  // preload assets
         this.load.image('bg4', './assets/level2/basicBack2.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
@@ -25,7 +25,6 @@ class Level2 extends Phaser.Scene {
         this.physics.world.gravity.y = 3500;
 
         // set bg
-        // this.cameras.main.setBackgroundColor("#227B96");
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg2').
             setOrigin(0, 0);
 
@@ -112,18 +111,18 @@ class Level2 extends Phaser.Scene {
         // this.door.alpha = 0;
 
         //cheater for debugging
-        this.input.keyboard.on('keydown', (event) => {
-            switch (event.key) {
-                case '1':
-                    this.scene.start("level1Scene");
-                    break;
-                case '2':
-                    this.scene.start("level2Scene");
-                    break;
-                default:
-                    break;
-            }
-        });
+        // this.input.keyboard.on('keydown', (event) => {
+        //     switch (event.key) {
+        //         case '1':
+        //             this.scene.start("level1Scene");
+        //             break;
+        //         case '2':
+        //             this.scene.start("level2Scene");
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // });
     }
 
     update() {
@@ -149,7 +148,6 @@ class Level2 extends Phaser.Scene {
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.body.setBounceX(1);
             this.robot.setFlip(true, false);
-            // see: https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Components.Animation.html#play__anchor
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
@@ -166,16 +164,10 @@ class Level2 extends Phaser.Scene {
         }
 
         // jump
-        // use JustDown to avoid "pogo" jumps if you player keeps the up key held down
-        // note: there is unfortunately no .justDown property in Phaser's cursor object
         if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-        // if(this.robot.body.touching.left || this.robot.body.touching.right){
-        //     this.physics.world.gravity.y = -(this.physics.world.gravity.y)
-            
-        // }
 
         if(Phaser.Input.Keyboard.JustDown(keyR)){     //重力反转 invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
