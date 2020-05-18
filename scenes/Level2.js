@@ -4,9 +4,8 @@ class Level2 extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('color', './assets/level2/color.png');
+        this.load.image('green', './assets/level2/green.png');
         this.load.image('bg4', './assets/level2/basicBack2.png');
-        this.load.image('door','./assets/level1/beer.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -32,11 +31,14 @@ class Level2 extends Phaser.Scene {
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level2', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5);
+        this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
+        this.add.text(120,10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
         // make ground tiles group
         this.ground = this.add.group();
-        // 小方块（顺序：从上往下)
 
+        //platforms
+        // 小方块（顺序：从上往下)
         // 平台1
         for (let i = 422; i < game.config.width - tileSize * 2; i += tileSize) {
             let groundTile = this.physics.add.sprite(i, 75).setScale(SCALE).setOrigin(0);
@@ -86,16 +88,16 @@ class Level2 extends Phaser.Scene {
         }
 
         // set up robot
-        this.robot = this.physics.add.sprite(game.config.width / 2, game.config.height / 2, 'player').setScale(SCALE);
+        this.robot = this.physics.add.sprite(20, 400, 'player').setScale(1.2).setOrigin(0);
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
 
-        //色块
-        this.color = new Color(this, 573, 45, 'color').setOrigin(0, 0);
-        this.color.setDepth(99999);
+        //color squares
+        this.color = new Color(this, 573, 45, 'green').setOrigin(0, 0);
+        this.color.setDepth(99998);
 
-        //门
+        //door
         // this.door = new Door(this, 580, 349, 'door').setOrigin(0, 0);
         // this.door.setDepth(99999);
 
@@ -109,7 +111,7 @@ class Level2 extends Phaser.Scene {
         // this.gameOver = false;
         // this.door.alpha = 0;
 
-        // 快速切换关卡 方便测试
+        //cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
             switch (event.key) {
                 case '1':
@@ -175,7 +177,7 @@ class Level2 extends Phaser.Scene {
             
         // }
 
-        if(Phaser.Input.Keyboard.JustDown(keyR)){     //重力反转
+        if(Phaser.Input.Keyboard.JustDown(keyR)){     //重力反转 invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
         }
 
@@ -195,7 +197,7 @@ class Level2 extends Phaser.Scene {
         }
     }
 
-        //障碍物爆炸
+    //destroy the door when collides
     colorExplode(obstacle){
         //temporarily hide obstacle
         obstacle.alpha = 0;

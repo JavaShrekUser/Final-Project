@@ -4,9 +4,9 @@ class Level1 extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('color', './assets/level1/color.png');
+        this.load.image('black', './assets/level1/black.png');
         this.load.image('bg3', './assets/level1/basicBack2.png');
-        this.load.image('door','./assets/level1/beer.png');
+        this.load.image('door','./assets/level1/door.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -42,6 +42,8 @@ class Level1 extends Phaser.Scene {
 
         // make ground tiles group
         this.ground = this.add.group();
+       
+        //platforms
         // 小方块（顺序：从上往下)
         // 地面
         for (let i = 467; i < game.config.width; i += tileSize) {
@@ -81,16 +83,16 @@ class Level1 extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(game.config.width / 2, game.config.height / 2, 'player').setScale(SCALE);
+        this.robot = this.physics.add.sprite(game.config.width / 2, game.config.height / 2, 'player').setScale(1.2).setOrigin(0);
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
 
-        //色块
-        this.color = new Color(this, 423, 398, 'color').setOrigin(0, 0);
+        //color squares
+        this.color = new Color(this, 423, 398, 'black').setOrigin(0, 0);
         this.color.setDepth(99999);
 
-        //门
+        //door
         this.door = new Door(this, 580, 349, 'door').setOrigin(0, 0);
         this.door.setDepth(99999);
         
@@ -105,7 +107,7 @@ class Level1 extends Phaser.Scene {
         this.gameOver = false;
         this.door.alpha = 0;
 
-        // 快速切换关卡 方便测试
+        // cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
             switch (event.key) {
                 case '1':
@@ -188,7 +190,7 @@ class Level1 extends Phaser.Scene {
         }
     }
 
-        //障碍物爆炸
+    //Destoring the door when collides
     colorExplode(obstacle){
         //temporarily hide obstacle
         obstacle.alpha = 0;
