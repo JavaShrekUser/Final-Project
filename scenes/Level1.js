@@ -149,14 +149,14 @@ class Level1 extends Phaser.Scene {
         // check keyboard input
         if (cursors.left.isDown) {
             this.robot.body.setAccelerationX(-this.ACCELERATION);
-            this.robot.body.setBounceX(1);
+            //this.robot.body.setBounceX(0.5);
             this.robot.setFlip(true, false);
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
             this.robot.body.setAccelerationX(this.ACCELERATION);
             // this.sound.play('walk');
-            this.robot.body.setBounceX(1);
+            //this.robot.body.setBounceX(0.5);
 
             this.robot.resetFlip();
             //this.robot.anims.play('walk', true);
@@ -168,10 +168,22 @@ class Level1 extends Phaser.Scene {
             //this.robot.anims.play('idle');
         }
 
-        // jump
+        // jump & bounce
         if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
+        }
+
+        if (this.robot.body.blocked.right && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+            this.robot.body.setVelocityY(this.JUMP_VELOCITY);
+            this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
+            this.sound.play('bounce');
+        }
+
+        if (this.robot.body.blocked.left && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+            this.robot.body.setVelocityY(this.JUMP_VELOCITY);
+            this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
+            this.sound.play('bounce');
         }
 
         //walk sound
