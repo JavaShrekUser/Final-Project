@@ -174,15 +174,10 @@ class Level1 extends Phaser.Scene {
             this.sound.play('jump');
         }
 
-        if (this.robot.body.blocked.right && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
-            this.sound.play('bounce');
-        }
-
-        if (this.robot.body.blocked.left && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
-            this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
+            if(this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
+            if(this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
             this.sound.play('bounce');
         }
 
