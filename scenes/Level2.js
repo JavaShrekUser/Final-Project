@@ -55,7 +55,7 @@ class Level2 extends Phaser.Scene {
         this.ACCELERATION = 500;
         this.MAX_X_VEL = 500;   // pixels/second
         this.MAX_Y_VEL = 5000;
-        this.DRAG = 5000;    // DRAG < ACCELERATION = icy slide
+        this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
         this.JUMP_VELOCITY = -1000;
         this.physics.world.gravity.y = 4000;
 
@@ -123,13 +123,13 @@ class Level2 extends Phaser.Scene {
         // check keyboard input
         if (cursors.left.isDown) {
             this.robot.body.setAccelerationX(-this.ACCELERATION);
-            //this.robot.body.setBounceX(0.3);
+            this.robot.body.setBounceX(0.3);
             this.robot.setFlip(true, false);
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
             this.robot.body.setAccelerationX(this.ACCELERATION);
-            //this.robot.body.setBounceX(0.3);
+            this.robot.body.setBounceX(0.3);
 
             this.robot.resetFlip();
             //this.robot.anims.play('walk', true);
@@ -146,12 +146,18 @@ class Level2 extends Phaser.Scene {
             this.sound.play('jump');
         }
 
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor()) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             if(this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
             if(this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
             this.sound.play('bounce');
         }
+        // if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        //     this.robot.body.setVelocityY(this.JUMP_VELOCITY);
+        //     if(this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
+        //     if(this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
+        //     this.sound.play('bounce');
+        // }
 
         //walk sound
         if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.right)) {
