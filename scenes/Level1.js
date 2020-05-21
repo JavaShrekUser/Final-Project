@@ -12,6 +12,8 @@ class Level1 extends Phaser.Scene {
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
+        this.load.audio('door', './assets/sound/DoorOpen.mp3');
+        
 
     }
 
@@ -140,10 +142,13 @@ class Level1 extends Phaser.Scene {
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
+
+
+
+
         // check keyboard input
         if (cursors.left.isDown) {
             this.robot.body.setAccelerationX(-this.ACCELERATION);
-            // this.sound.play('walk');
             this.robot.body.setBounceX(1);
             this.robot.setFlip(true, false);
             // play(key [, ignoreIfPlaying] [, startFrame])
@@ -169,6 +174,16 @@ class Level1 extends Phaser.Scene {
             this.sound.play('jump');
         }
 
+        //walk sound
+        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.right)) {
+            this.sound.play('walk');
+        }
+        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.left)) {
+            this.sound.play('walk');
+        }
+
+
+
 
         // wrap physics object(s) .wrap(gameObject, padding)
         this.physics.world.wrap(this.robot, this.robot.width / 2);
@@ -190,6 +205,8 @@ class Level1 extends Phaser.Scene {
     colorExplode(obstacle){
         //temporarily hide obstacle
         obstacle.alpha = 0;
+        this.color.y = 450
+        this.sound.play('levelup');
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
         this.door.y = 349;
         
@@ -197,7 +214,7 @@ class Level1 extends Phaser.Scene {
 
     doorExplode(obstacle){    // change level 
         obstacle.alpha = 0;
-        this.sound.play('levelup');
+        this.sound.play('door');
         this.scene.start('level2Scene');
         
     }

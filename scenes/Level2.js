@@ -11,86 +11,72 @@ class Level2 extends Phaser.Scene {
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
-        // this.load.image('door','./assets/level1/beer.png');
+        this.load.audio('door', './assets/sound/DoorOpen.mp3');
+        this.load.image("1bit_tiles", "./assets/MainTiledSet.png");
+        this.load.image('Trap', './assets/level2/Trap.png');
+        this.load.image('bgimage', './assets/level2/BGI.png');
+        this.load.tilemapTiledJSON('platform_map', './assets/level2/TiledMap.json'); 
 
     }
 
     create() {
+
+        // add a tilemap
+        const map = this.add.tilemap("platform_map");
+
+        // add a tileset to the map
+        const tileset = map.addTilesetImage("TiledSet","1bit_tiles");
+
+        this.bgimage = this.add.tileSprite(0, 0, 640, 480, 'bgimage').setOrigin(0, 0);;
+
+        // create tilemap layers
+        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0);
+        // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
+
+        platforms.setCollisionByExclusion(-1,true);
+        
+
+        // trapLayer.setCollisionByExclusion(-1,true);
+
+
+                // define a render debug so we can see the tilemap's collision bounds
+        // const debugGraphics = this.add.graphics().setAlpha(0.75);
+        // platforms.renderDebug(debugGraphics, {
+        //     tileColor: null,    // color of non-colliding tiles
+        //     collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),    // color of colliding tiles
+        //     faceColor: new Phaser.Display.Color(40, 39, 37, 255)                // color of colliding face edges
+        // });
+
+        // set map collision (two styles: uncomment *one* of the two lines below)
+        //groundLayer.setCollision([19, 20, 21, 67, 69, 120]);
+      
+
         // variables and settings
         this.ACCELERATION = 500;
         this.MAX_X_VEL = 500;   // pixels/second
         this.MAX_Y_VEL = 5000;
         this.DRAG = 5000;    // DRAG < ACCELERATION = icy slide
         this.JUMP_VELOCITY = -1000;
-        this.physics.world.gravity.y = 3500;
+        this.physics.world.gravity.y = 4000;
 
         // set bg
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg2').
-            setOrigin(0, 0);
+        // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg2').
+        //     setOrigin(0, 0);
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level2', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5);
         this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
         this.add.text(120,10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
-        // make ground tiles group
-        this.ground = this.add.group();
-
-        //platforms
-        // 小方块（顺序：从上往下)
-        // 平台1
-        for (let i = 422; i < game.config.width - tileSize * 2; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, 75).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        for (let i = 101; i < 240; i += tileSize) {
-            let groundTile = this.physics.add.sprite(513, i).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        // 平台2
-        for (let i = 102; i < game.config.width - tileSize * 15; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, 142).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        // 平台3
-        for (let i = 230; i < game.config.width - tileSize * 12; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, 250).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        // 平台4
-        for (let i = 66; i < game.config.width - tileSize * 17; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, 348).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        // 地面
-        for (let i = 353; i < game.config.width; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize * 2).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
-        for (let i = 0; i < game.config.width; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize).setScale(SCALE).setOrigin(0);
-            groundTile.body.immovable = true;
-            groundTile.body.allowGravity = false;
-            this.ground.add(groundTile);
-        }
 
         // set up robot
-        this.robot = this.physics.add.sprite(20, 400, 'player').setScale(1.2).setOrigin(0);
+        this.robot = this.physics.add.sprite(260, 300, 'player').setScale(1.2).setOrigin(0);
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
+
+        // add physics collider
+        this.physics.add.collider(this.robot,platforms);
 
         //color squares
         this.color = new Color(this, 573, 45, 'green').setOrigin(0, 0);
@@ -104,32 +90,23 @@ class Level2 extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
-        // add physics collider
-        this.physics.add.collider(this.robot, this.ground);
+        this.spikes = this.physics.add.group({
+            allowGravity: false,
+            immovable: true
+        });
 
-        // this.gameOver = false;
-        // this.door.alpha = 0;
+        const spikeObjects = map.getObjectLayer('Trap')['objects'];
 
-        //cheater for debugging
-        // this.input.keyboard.on('keydown', (event) => {
-        //     switch (event.key) {
-        //         case '1':
-        //             this.scene.start("level1Scene");
-        //             break;
-        //         case '2':
-        //             this.scene.start("level2Scene");
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // });
+        spikeObjects.forEach(spikeObject => {
+        // Add new spikes to our sprite group
+        const spike = this.spikes.create(spikeObject.x+18, spikeObject.y, 'Trap').setOrigin(1,1);
+
+        this.physics.add.collider(this.robot, this.spikes, robotHit, null, this);
+  
+        });
     }
 
     update() {
-
-        this.robot.update();         // update player sprite
-        this.color.update();
-        // this.door.update(); 
 
          // check collisions
          if (this.checkCollision(this.robot, this.color)) {
@@ -146,13 +123,13 @@ class Level2 extends Phaser.Scene {
         // check keyboard input
         if (cursors.left.isDown) {
             this.robot.body.setAccelerationX(-this.ACCELERATION);
-            this.robot.body.setBounceX(1);
+            this.robot.body.setBounceX(0.3);
             this.robot.setFlip(true, false);
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
             this.robot.body.setAccelerationX(this.ACCELERATION);
-            this.robot.body.setBounceX(1);
+            this.robot.body.setBounceX(0.3);
 
             this.robot.resetFlip();
             //this.robot.anims.play('walk', true);
@@ -164,9 +141,17 @@ class Level2 extends Phaser.Scene {
         }
 
         // jump
-        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
+        }
+
+        //walk sound
+        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.right)) {
+            this.sound.play('walk');
+        }
+        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.left)) {
+            this.sound.play('walk');
         }
 
         if(Phaser.Input.Keyboard.JustDown(keyR)){     //重力反转 invers the gravity
@@ -193,7 +178,10 @@ class Level2 extends Phaser.Scene {
     colorExplode(obstacle){
         //temporarily hide obstacle
         obstacle.alpha = 0;
+        this.color.y = 450;
+        this.sound.play('levelup');
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg4').setOrigin(0, 0);
+        // this.door.y = 450;
         
     }
 
@@ -202,4 +190,23 @@ class Level2 extends Phaser.Scene {
     //     this.scene.start('level2Scene');
         
     // }
+
+    
+}
+function robotHit(robot, spike) {
+    // Set velocity back to 0
+    this.robot.setVelocity(0, 0);
+    // Put the player back in its original position
+    this.robot.setX(260);
+    this.robot.setY(300);
+    // Set the visibility to 0 i.e. hide the player
+    this.robot.setAlpha(0);
+    // Add a tween that 'blinks' until the player is gradually visible
+    let tw = this.tweens.add({
+        targets: this.robot,
+        alpha: 1,
+        duration: 100,
+        ease: 'Linear',
+        repeat: 5,
+    });
 }
