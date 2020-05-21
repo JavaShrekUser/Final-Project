@@ -108,24 +108,24 @@ class Level1 extends Phaser.Scene {
         this.gameOver = false;
         this.door.alpha = 0;
 
-        // cheater for debugging
-        // this.input.keyboard.on('keydown', (event) => {
-        //     switch (event.key) {
-        //         case '1':
-        //             this.scene.start("level1Scene");
-        //             break;
-        //         case '2':
-        //             this.scene.start("level2Scene");
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // });
+        //cheater for debugging
+        this.input.keyboard.on('keydown', (event) => {
+            switch (event.key) {
+                case '1':
+                    this.scene.start("level1Scene");
+                    break;
+                case '2':
+                    this.scene.start("level2Scene");
+                    break;
+                default:
+                    break;
+            }
+        });
 
+        this.canJump = true;
     }
 
     update() {
-
         this.robot.update();         // update player sprite
         this.color.update();
         this.door.update();           // update obstacles
@@ -141,9 +141,6 @@ class Level1 extends Phaser.Scene {
             this.doorExplode(this.door); 
             // this.robotExplode(this.robot.x,this.robot.y);
         }
-
-
-
 
 
         // check keyboard input
@@ -169,16 +166,19 @@ class Level1 extends Phaser.Scene {
         }
 
         // jump & bounce
-
-        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        // this.robot.body.touching.down
+        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.touching.down) {
+        if(this.robot.body.onFloor()){
+            this.canJump = true;
+        }
+        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             if(this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
             if(this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
+            this.canJump = false;
             this.sound.play('bounce');
         }
 
