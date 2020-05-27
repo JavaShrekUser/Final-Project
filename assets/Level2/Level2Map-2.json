@@ -1,11 +1,4 @@
 { "compressionlevel":-1,
- "editorsettings":
-    {
-     "export":
-        {
-         "target":"."
-        }
-    },
  "height":120,
  "infinite":false,
  "layers":[
@@ -42,7 +35,7 @@
         {
          "columns":1,
          "firstgid":1,
-         "image":"..\/..\/Final-Project-master\/assets\/Trap.png",
+         "image":"..\/Trap.png",
          "imageheight":17,
          "imagewidth":18,
          "margin":0,
