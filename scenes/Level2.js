@@ -172,7 +172,7 @@ class Level2 extends Phaser.Scene {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-        
+
         if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             if (this.robot.body.blocked.right) {
@@ -196,6 +196,10 @@ class Level2 extends Phaser.Scene {
             this.input.keyboard.addKey(cursors.right);
         }
 
+        if (Phaser.Input.Keyboard.JustDown(keyR)) {     //重力反转 invers the gravity
+            this.physics.world.gravity.y = -(this.physics.world.gravity.y);
+        }
+        
         // wrap physics object(s) .wrap(gameObject, padding)
         this.physics.world.wrap(this.robot, this.robot.width / 2);
     }
