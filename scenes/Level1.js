@@ -176,19 +176,32 @@ class Level1 extends Phaser.Scene {
         // jump & bounce
         // this.robot.body.onFloor()
         // this.robot.body.touching.down
-        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-        if (this.robot.body.onFloor()) {
-            this.canJump = true;
-        }
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
+
+        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.touching.down && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if (this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
-            if (this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
+            if (this.robot.body.blocked.right) {
+                this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
+            }
+            if (this.robot.body.blocked.left) {
+                this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
+            }
             this.canJump = false;
             this.sound.play('bounce');
+        } else if (this.robot.body.touching.down) {
+            this.canJump = true;
+        }
+
+        if (!this.canJump) {
+            this.input.keyboard.resetKeys();
+            this.input.keyboard.removeKey(cursors.left);
+            this.input.keyboard.removeKey(cursors.right);
+        } else {
+            this.input.keyboard.addKey(cursors.left);
+            this.input.keyboard.addKey(cursors.right);
         }
 
         // wrap physics object(s) .wrap(gameObject, padding)

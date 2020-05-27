@@ -172,20 +172,28 @@ class Level2 extends Phaser.Scene {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-        if (this.robot.body.onFloor()) {
-            this.canJump = true;
-        }
+        
         if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if (this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
-            if (this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
+            if (this.robot.body.blocked.right) {
+                this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
+            }
+            if (this.robot.body.blocked.left) {
+                this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
+            }
             this.canJump = false;
             this.sound.play('bounce');
+        } else if (this.robot.body.onFloor()) {
+            this.canJump = true;
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyR)) {     //重力反转 invers the gravity
-            this.physics.world.gravity.y = -(this.physics.world.gravity.y);
-
+        if (!this.canJump) {
+            this.input.keyboard.resetKeys();
+            this.input.keyboard.removeKey(cursors.left);
+            this.input.keyboard.removeKey(cursors.right);
+        } else {
+            this.input.keyboard.addKey(cursors.left);
+            this.input.keyboard.addKey(cursors.right);
         }
 
         // wrap physics object(s) .wrap(gameObject, padding)
