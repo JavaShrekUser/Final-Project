@@ -33,7 +33,7 @@ class Level2 extends Phaser.Scene {
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0);
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
-        platforms.setCollisionByProperty({ collides: true});
+        platforms.setCollisionByProperty({ collides: true });
 
 
         // trapLayer.setCollisionByExclusion(-1,true);
@@ -138,16 +138,27 @@ class Level2 extends Phaser.Scene {
 
         // check keyboard input
         if (cursors.left.isDown) {
+            if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
+                this.robot.body.setVelocityX(0);
+                // play walking sound
+                if (this.robot.body.onFloor()) {
+                    this.sound.play('walk');
+                }
+            }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
-            //this.robot.body.setBounceX(0.3);
             this.robot.setFlip(true, false);
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
-            this.robot.body.setAccelerationX(this.ACCELERATION);
-            //this.robot.body.setBounceX(0.3);
-
+            if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
+                this.robot.body.setVelocityX(0);
+                // play walking sound
+                if (this.robot.body.onFloor()) {
+                    this.sound.play('walk');
+                }
+            }
             this.robot.resetFlip();
+            this.robot.body.setAccelerationX(this.ACCELERATION);
             //this.robot.anims.play('walk', true);
         } else {
             // set acceleration to 0 so DRAG will take over
@@ -171,24 +182,10 @@ class Level2 extends Phaser.Scene {
             this.canJump = false;
             this.sound.play('bounce');
         }
-        // if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
-        //     this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-        //     if(this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
-        //     if(this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
-        //     this.sound.play('bounce');
-        // }
-
-        //walk sound
-        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.right)) {
-            this.sound.play('walk');
-        }
-        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.left)) {
-            this.sound.play('walk');
-        }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //重力反转 invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
-            
+
         }
 
         // wrap physics object(s) .wrap(gameObject, padding)

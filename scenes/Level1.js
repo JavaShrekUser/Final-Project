@@ -3,29 +3,29 @@ class Level1 extends Phaser.Scene {
         super("level1Scene");
     }
 
-    preload(){
+    preload() {
         this.load.image('black', './assets/level1/black.png');      //preload assets
         this.load.image('bg3', './assets/level1/basicBack2.png');
-        this.load.image('door','./assets/level1/door.png');
-        this.load.audio('choco','./assets/sound/BGM.mp3');
+        this.load.image('door', './assets/level1/door.png');
+        this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
-        
+
 
     }
 
     create() {
 
-        this.bgm = this.sound.add('choco',{     //add background music
-            mute : false,
-            volume : 0.5,
-            rate : 3,
-            loop : true
+        this.bgm = this.sound.add('choco', {     //add background music
+            mute: false,
+            volume: 0.5,
+            rate: 3,
+            loop: true
         });
-        
+
         this.sound.play('choco');
         // variables and settings
         this.ACCELERATION = 500;
@@ -43,13 +43,13 @@ class Level1 extends Phaser.Scene {
 
         // make ground tiles group
         this.ground = this.add.group();
-       
+
         //platforms
         // 小方块（顺序：从上往下)
         // 地面
         for (let i = 467; i < game.config.width; i += tileSize) {
-            let groundTile1 = this.physics.add.sprite(i, game.config.height - tileSize*4).setScale(SCALE).setOrigin(0);
-            let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize*3).setScale(SCALE).setOrigin(0);
+            let groundTile1 = this.physics.add.sprite(i, game.config.height - tileSize * 4).setScale(SCALE).setOrigin(0);
+            let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize * 3).setScale(SCALE).setOrigin(0);
             groundTile1.body.immovable = true;
             groundTile1.body.allowGravity = false;
             groundTile2.body.immovable = true;
@@ -58,9 +58,9 @@ class Level1 extends Phaser.Scene {
             this.ground.add(groundTile2);
         }
         for (let i = 0; i < game.config.width - tileSize * 20; i += tileSize) {
-            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize*5).setScale(SCALE).setOrigin(0);
-            let groundTile1 = this.physics.add.sprite(i, game.config.height - tileSize*4).setScale(SCALE).setOrigin(0);
-            let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize*3).setScale(SCALE).setOrigin(0);
+            let groundTile = this.physics.add.sprite(i, game.config.height - tileSize * 5).setScale(SCALE).setOrigin(0);
+            let groundTile1 = this.physics.add.sprite(i, game.config.height - tileSize * 4).setScale(SCALE).setOrigin(0);
+            let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize * 3).setScale(SCALE).setOrigin(0);
             groundTile.body.immovable = true;
             groundTile.body.allowGravity = false;
             groundTile1.body.immovable = true;
@@ -72,7 +72,7 @@ class Level1 extends Phaser.Scene {
             this.ground.add(groundTile2);
         }
         for (let i = 0; i < game.config.width; i += tileSize) {
-            let groundTile1 = this.physics.add.sprite(i, game.config.height - tileSize*2).setScale(SCALE).setOrigin(0);
+            let groundTile1 = this.physics.add.sprite(i, game.config.height - tileSize * 2).setScale(SCALE).setOrigin(0);
             let groundTile2 = this.physics.add.sprite(i, game.config.height - tileSize).setScale(SCALE).setOrigin(0);
             groundTile1.body.immovable = true;
             groundTile1.body.allowGravity = false;
@@ -96,7 +96,7 @@ class Level1 extends Phaser.Scene {
         //door
         this.door = new Door(this, 580, 0, 'door').setOrigin(0, 0);
         this.door.setDepth(99999);
-        
+
 
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
@@ -132,66 +132,64 @@ class Level1 extends Phaser.Scene {
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
-            this.colorExplode(this.color); 
+            this.colorExplode(this.color);
             this.door.alpha = 1;
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
         if (this.checkCollision(this.robot, this.door)) {
-            this.doorExplode(this.door); 
+            this.doorExplode(this.door);
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
-
         // check keyboard input
-
         if (cursors.left.isDown) {
+            if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
+                this.robot.body.setVelocityX(0);
+                // play walking sound
+                if (this.robot.body.onFloor()) {
+                    this.sound.play('walk');
+                }
+            }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
-            //this.robot.body.setBounceX(0.3);
             this.robot.setFlip(true, false);
             // play(key [, ignoreIfPlaying] [, startFrame])
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
-            this.robot.body.setAccelerationX(this.ACCELERATION);
-            // this.sound.play('walk');
-            //this.robot.body.setBounceX(0.3);
+            if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
+                this.robot.body.setVelocityX(0);
+                // play walking sound
+                if (this.robot.body.onFloor()) {
+                    this.sound.play('walk');
+                }
+            }
             this.robot.resetFlip();
+            this.robot.body.setAccelerationX(this.ACCELERATION);
             //this.robot.anims.play('walk', true);
         } else {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
-            
             //this.robot.anims.play('idle');
         }
 
         // jump & bounce
+        // this.robot.body.onFloor()
         // this.robot.body.touching.down
         if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-        if(this.robot.body.onFloor()){
+        if (this.robot.body.onFloor()) {
             this.canJump = true;
         }
         if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if(this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY/3);
-            if(this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY/3);
+            if (this.robot.body.blocked.right) this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
+            if (this.robot.body.blocked.left) this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
             this.canJump = false;
             this.sound.play('bounce');
         }
-
-        //walk sound
-        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.right)) {
-            this.sound.play('walk');
-        }
-        if (this.robot.body.touching.down && Phaser.Input.Keyboard.JustDown(cursors.left)) {
-            this.sound.play('walk');
-        }
-
-
-
 
         // wrap physics object(s) .wrap(gameObject, padding)
         this.physics.world.wrap(this.robot, this.robot.width / 2);
@@ -210,20 +208,20 @@ class Level1 extends Phaser.Scene {
     }
 
     //Destoring the door when collides
-    colorExplode(obstacle){
+    colorExplode(obstacle) {
         //temporarily hide obstacle
         obstacle.alpha = 0;
         this.color.y = 450
         this.sound.play('levelup');
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
         this.door.y = 349;
-        
+
     }
 
-    doorExplode(obstacle){    // change level 
+    doorExplode(obstacle) {    // change level 
         obstacle.alpha = 0;
         this.sound.play('door');
         this.scene.start('level2Scene');
-        
+
     }
 }
