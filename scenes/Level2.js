@@ -59,8 +59,7 @@ class Level2 extends Phaser.Scene {
         this.physics.world.gravity.y = 3000;
 
         // print Scene name
-        this.add.text(game.config.width / 2, 30, 'level2', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5);
-        this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
+        this.add.text(game.config.width / 2, 30, 'level2', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99998);
         this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
 
@@ -130,10 +129,10 @@ class Level2 extends Phaser.Scene {
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
-        // if (this.checkCollision(this.robot, this.door)) {
-        //     this.doorExplode(this.door); 
-        //     // this.robotExplode(this.robot.x,this.robot.y);
-        // }
+        if (this.checkCollision(this.robot, this.door)) {
+            this.doorExplode(this.door); 
+            // this.robotExplode(this.robot.x,this.robot.y);
+        }
 
         // check keyboard input
         if (cursors.left.isDown) {
@@ -226,11 +225,11 @@ class Level2 extends Phaser.Scene {
 
     }
 
-    // doorExplode(obstacle){
-    //     obstacle.alpha = 0;
-    //     this.scene.start('level3Scene');
+    doorExplode(obstacle){
+        obstacle.alpha = 0;
+        this.scene.start('level3Scene');
 
-    // }
+    }
 
 
 }

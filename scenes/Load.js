@@ -13,6 +13,9 @@ class Load extends Phaser.Scene {
         // load level2 assets
         this.load.path = "assets/level2/";
         this.load.image('bg2', 'Level2-1.png');
+        // load level3 assets
+        this.load.path = "assets/level3/";
+        this.load.image('bg5', 'Level3-1.png');
     }
 
 
