@@ -4,7 +4,7 @@ class Level2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('yellow', './assets/level2/yellow.png');  // preload assets
+        this.load.image('yellow', './assets/Level2/yellow.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -13,8 +13,8 @@ class Level2 extends Phaser.Scene {
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles2", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
-        this.load.tilemapTiledJSON('platform_map2', './assets/level2/Level2Map-2.json');
-        this.load.image('bg4', './assets/level2/Level2-2.png');
+        this.load.tilemapTiledJSON('platform_map2', './assets/Level2/Level2Map-2.json');
+        this.load.image('bg4', './assets/Level2/Level2-2.png');
 
     }
 
