@@ -4,36 +4,35 @@ class Level2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('green', './assets/level2/green.png');  // preload assets
-        this.load.image('bg4', './assets/level2/basicBack2.png');
+        this.load.image('yellow', './assets/level2/yellow.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
-        this.load.image("1bit_tiles", "./assets/MainTiledSet.png");
+        this.load.image("1bit_tiles2", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/level2/Trap.png');
-        this.load.image('bgimage', './assets/level2/BGI.png');
-        this.load.tilemapTiledJSON('platform_map', './assets/level2/TiledMap.json');
+        this.load.tilemapTiledJSON('platform_map2', './assets/level2/Level2Map-2.json');
+        this.load.image('bg4', './assets/level2/Level2-2.png');
 
     }
 
     create() {
 
         // add a tilemap
-        const map = this.add.tilemap("platform_map");
+        const map = this.add.tilemap("platform_map2");
 
         // add a tileset to the map
-        const tileset = map.addTilesetImage("TiledSet", "1bit_tiles");
+        const tileset = map.addTilesetImage("MainTiledSet", "1bit_tiles2");
 
-        this.bgimage = this.add.tileSprite(0, 0, 640, 480, 'bgimage').setOrigin(0, 0);;
+        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg2').setOrigin(0, 0);
 
         // create tilemap layers
-        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0);
+        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
-        platforms.setCollisionByProperty({ collides: true });
+        platforms.setCollisionByProperty({ collides: true});
 
 
         // trapLayer.setCollisionByExclusion(-1,true);
@@ -59,10 +58,6 @@ class Level2 extends Phaser.Scene {
         this.JUMP_VELOCITY = -750;
         this.physics.world.gravity.y = 3000;
 
-        // set bg
-        // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg2').
-        //     setOrigin(0, 0);
-
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level2', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5);
         this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
@@ -70,7 +65,7 @@ class Level2 extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(260, 300, 'player').setScale(1.2).setOrigin(0);
+        this.robot = this.physics.add.sprite(80, 300, 'player').setScale(1.2).setOrigin(0);
         // this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -79,12 +74,13 @@ class Level2 extends Phaser.Scene {
         this.physics.add.collider(this.robot, platforms);
 
         //color squares
-        this.color = new Color(this, 573, 45, 'green').setOrigin(0, 0);
+        this.color = new Color(this, 600, 180, 'yellow').setOrigin(0, 0);
         this.color.setDepth(99998);
 
         //door
-        // this.door = new Door(this, 580, 349, 'door').setOrigin(0, 0);
-        // this.door.setDepth(99999);
+        this.door = new Door(this, 580, 470, 'door').setOrigin(0, 0);
+        this.door.setDepth(99999);
+        this.door.alpha = 0;
 
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
@@ -127,14 +123,14 @@ class Level2 extends Phaser.Scene {
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
-            // this.door.alpha = 1;
+            this.door.alpha = 1;
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
-        // if (this.checkCollision(this.robot, this.door)) {
-        //     // this.doorExplode(this.door); 
-        //     // this.robotExplode(this.robot.x,this.robot.y);
-        // }
+        if (this.checkCollision(this.robot, this.door)) {
+            this.doorExplode(this.door); 
+            // this.robotExplode(this.robot.x,this.robot.y);
+        }
 
         // check keyboard input
         if (cursors.left.isDown) {
@@ -196,7 +192,7 @@ class Level2 extends Phaser.Scene {
             this.input.keyboard.addKey(cursors.right);
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keyR)) {     //重力反转 invers the gravity
+        if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
         }
         
@@ -223,7 +219,7 @@ class Level2 extends Phaser.Scene {
         this.color.y = 450;
         this.sound.play('levelup');
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg4').setOrigin(0, 0);
-        // this.door.y = 450;
+        this.door.y = 389;
 
     }
 
