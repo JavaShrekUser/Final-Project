@@ -29,7 +29,7 @@ class Level2 extends Phaser.Scene {
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg2').setOrigin(0, 0);
 
         // create tilemap layers
-        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);
+        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);;
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true});
@@ -110,6 +110,9 @@ class Level2 extends Phaser.Scene {
                 case '2':
                     this.scene.start("level2Scene");
                     break;
+                case '3':
+                    this.scene.start("level3Scene");
+                    break;   
                 default:
                     break;
             }
@@ -127,10 +130,10 @@ class Level2 extends Phaser.Scene {
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
-        if (this.checkCollision(this.robot, this.door)) {
-            this.doorExplode(this.door); 
-            // this.robotExplode(this.robot.x,this.robot.y);
-        }
+        // if (this.checkCollision(this.robot, this.door)) {
+        //     this.doorExplode(this.door); 
+        //     // this.robotExplode(this.robot.x,this.robot.y);
+        // }
 
         // check keyboard input
         if (cursors.left.isDown) {
@@ -223,11 +226,11 @@ class Level2 extends Phaser.Scene {
 
     }
 
-    doorExplode(obstacle){
-        obstacle.alpha = 0;
-        this.scene.start('level3Scene');
+    // doorExplode(obstacle){
+    //     obstacle.alpha = 0;
+    //     this.scene.start('level3Scene');
 
-    }
+    // }
 
 
 }
