@@ -45,12 +45,12 @@ class Level1 extends Phaser.Scene {
         platforms.setCollisionByProperty({ collides: true });
 
         // variables and settings
-        this.ACCELERATION = 500;
-        this.MAX_X_VEL = 600;   // pixels/second
-        this.MAX_Y_VEL = 3000;
+        this.ACCELERATION = 1500;
+        this.MAX_X_VEL = 300;   // pixels/second
+        this.MAX_Y_VEL = 700;
         this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
-        this.JUMP_VELOCITY = -1000;
-        this.physics.world.gravity.y = 3500;
+        this.JUMP_VELOCITY = -750;
+        this.physics.world.gravity.y = 3000;
 
         // set bg
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg1').setOrigin(0, 0);
@@ -60,7 +60,7 @@ class Level1 extends Phaser.Scene {
 
         // set up robot
         this.robot = this.physics.add.sprite(150, 350, 'player').setScale(1.2).setOrigin(0);
-        // this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
+        this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
 

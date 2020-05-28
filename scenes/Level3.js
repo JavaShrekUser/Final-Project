@@ -51,9 +51,9 @@ class Level3 extends Phaser.Scene {
 
 
         // variables and settings
-        this.ACCELERATION = 300;
-        // this.MAX_X_VEL = 500;   // pixels/second
-        // this.MAX_Y_VEL = 5000;
+        this.ACCELERATION = 1500;
+        this.MAX_X_VEL = 300;   // pixels/second
+        this.MAX_Y_VEL = 700;
         this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
         this.JUMP_VELOCITY = -750;
         this.physics.world.gravity.y = 3000;
@@ -66,7 +66,7 @@ class Level3 extends Phaser.Scene {
 
         // set up robot
         this.robot = this.physics.add.sprite(80, 300, 'player').setScale(1.2).setOrigin(0);
-        // this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
+        this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
 
@@ -138,7 +138,7 @@ class Level3 extends Phaser.Scene {
         // check keyboard input
         if (cursors.left.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
-                this.robot.body.setVelocityX(0);
+                // this.robot.body.setVelocityX(0);
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
@@ -150,7 +150,7 @@ class Level3 extends Phaser.Scene {
             //this.robot.anims.play('walk', true);
         } else if (cursors.right.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-                this.robot.body.setVelocityX(0);
+                // this.robot.body.setVelocityX(0);
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
@@ -186,12 +186,13 @@ class Level3 extends Phaser.Scene {
             this.canJump = true;
         }
 
-        if (!this.canJump) {
-            this.input.keyboard.enabled = false;
-            this.input.keyboard.resetKeys();
-        } else {
-            this.input.keyboard.enabled = true;
-        }
+        // prevent user input during a walljump
+        // if (!this.canJump) {
+        //     this.input.keyboard.enabled = false;
+        //     this.input.keyboard.resetKeys();
+        // } else {
+        //     this.input.keyboard.enabled = true;
+        // }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
