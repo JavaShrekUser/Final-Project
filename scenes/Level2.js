@@ -32,7 +32,7 @@ class Level2 extends Phaser.Scene {
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);;
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
-        platforms.setCollisionByProperty({ collides: true});
+        platforms.setCollisionByProperty({ collides: true });
 
 
         // trapLayer.setCollisionByExclusion(-1,true);
@@ -111,7 +111,7 @@ class Level2 extends Phaser.Scene {
                     break;
                 case '3':
                     this.scene.start("level3Scene");
-                    break;   
+                    break;
                 default:
                     break;
             }
@@ -130,7 +130,7 @@ class Level2 extends Phaser.Scene {
         }
 
         if (this.checkCollision(this.robot, this.door)) {
-            this.doorExplode(this.door); 
+            this.doorExplode(this.door);
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
@@ -186,18 +186,16 @@ class Level2 extends Phaser.Scene {
         }
 
         if (!this.canJump) {
+            this.input.keyboard.enabled = false;
             this.input.keyboard.resetKeys();
-            this.input.keyboard.removeKey(cursors.left);
-            this.input.keyboard.removeKey(cursors.right);
         } else {
-            this.input.keyboard.addKey(cursors.left);
-            this.input.keyboard.addKey(cursors.right);
+            this.input.keyboard.enabled = true;
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
         }
-        
+
         // wrap physics object(s) .wrap(gameObject, padding)
         this.physics.world.wrap(this.robot, this.robot.width / 2);
     }
@@ -225,7 +223,7 @@ class Level2 extends Phaser.Scene {
 
     }
 
-    doorExplode(obstacle){
+    doorExplode(obstacle) {
         obstacle.alpha = 0;
         this.scene.start('level3Scene');
 

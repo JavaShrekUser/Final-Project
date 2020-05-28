@@ -187,12 +187,10 @@ class Level3 extends Phaser.Scene {
         }
 
         if (!this.canJump) {
+            this.input.keyboard.enabled = false;
             this.input.keyboard.resetKeys();
-            this.input.keyboard.removeKey(cursors.left);
-            this.input.keyboard.removeKey(cursors.right);
         } else {
-            this.input.keyboard.addKey(cursors.left);
-            this.input.keyboard.addKey(cursors.right);
+            this.input.keyboard.enabled = true;
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
