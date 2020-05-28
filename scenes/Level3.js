@@ -51,8 +51,8 @@ class Level3 extends Phaser.Scene {
 
 
         // variables and settings
-        this.ACCELERATION = 1500;
-        this.MAX_X_VEL = 300;   // pixels/second
+        this.ACCELERATION = 650;
+        this.MAX_X_VEL = 220;   // pixels/second
         this.MAX_Y_VEL = 700;
         this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
         this.JUMP_VELOCITY = -750;
@@ -175,10 +175,10 @@ class Level3 extends Phaser.Scene {
         if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             if (this.robot.body.blocked.right) {
-                this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
+                this.robot.body.setVelocityX(this.JUMP_VELOCITY);
             }
             if (this.robot.body.blocked.left) {
-                this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
+                this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
             }
             this.canJump = false;
             this.sound.play('bounce');
