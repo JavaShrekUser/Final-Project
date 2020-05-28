@@ -12,7 +12,7 @@ class Level2 extends Phaser.Scene {
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles2", "./assets/MainTiledSet.png");
-        this.load.image('Trap', './assets/level2/Trap.png');
+        this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map2', './assets/level2/Level2Map-2.json');
         this.load.image('bg4', './assets/level2/Level2-2.png');
 
@@ -223,11 +223,11 @@ class Level2 extends Phaser.Scene {
 
     }
 
-    // doorExplode(obstacle){
-    //     obstacle.alpha = 0;
-    //     this.scene.start('level2Scene');
+    doorExplode(obstacle){
+        obstacle.alpha = 0;
+        this.scene.start('level3Scene');
 
-    // }
+    }
 
 
 }
