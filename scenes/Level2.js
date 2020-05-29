@@ -64,7 +64,13 @@ class Level2 extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(80, 300, 'player').setScale(1.2).setOrigin(0);
+        this.robot = this.physics.add.sprite(150, 350, 'player').setScale(1.2).setOrigin(0);
+        this.anims.create({
+            key: 'Moving',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -121,6 +127,7 @@ class Level2 extends Phaser.Scene {
     }
 
     update() {
+        this.robot.play('Moving',true);
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
@@ -185,6 +192,12 @@ class Level2 extends Phaser.Scene {
             this.canJump = true;
         }
 
+        if (this.robot.body.blocked.up){
+            this.robot.setFlipY(true);
+        } else {
+            this.robot.setFlipY(false);
+        }
+
         //prevent user input during a walljump
         // if (!this.canJump) {
         //     this.input.keyboard.enabled = false;
@@ -195,6 +208,7 @@ class Level2 extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
+            // this.robot.setFlip(false, true);
         }
 
         // wrap physics object(s) .wrap(gameObject, padding)
