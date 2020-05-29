@@ -75,6 +75,16 @@ class Level3 extends Phaser.Scene {
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
 
+        //tutorial
+        this.sign = new Door(this, 420, 300, 'tutorial').setOrigin(0, 0);
+        this.anims.create({
+            key: 'sign',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('tutorial', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
+        this.sign.setDepth(99999);
+
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
 
@@ -134,6 +144,12 @@ class Level3 extends Phaser.Scene {
     }
 
     update() {
+        if (this.robot.x >400 && this.robot.x < 500){
+            this.sign.play('sign',true)
+            this.sign.alpha = 1;
+        }else{
+            this.sign.alpha = 0;
+        }
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
@@ -185,34 +201,22 @@ class Level3 extends Phaser.Scene {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
-
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
-            this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if (this.robot.body.blocked.right) {
-                this.robot.body.setVelocityX(this.JUMP_VELOCITY);
+        if (this.color.y >440){
+            if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
+                this.robot.body.setVelocityY(this.JUMP_VELOCITY);
+                if (this.robot.body.blocked.right) {
+                    this.robot.body.setVelocityX(this.JUMP_VELOCITY);
+                }
+                if (this.robot.body.blocked.left) {
+                    this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
+                }
+                this.canJump = false;
+                this.sound.play('bounce');
+            } else if (this.robot.body.onFloor()) {
+                this.canJump = true;
             }
-            if (this.robot.body.blocked.left) {
-                this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
-            }
-            this.canJump = false;
-            this.sound.play('bounce');
-        } else if (this.robot.body.onFloor()) {
-            this.canJump = true;
         }
-
-        if (this.robot.body.blocked.up){
-            this.robot.setFlipY(true);
-        } else {
-            this.robot.setFlipY(false);
-        }
-
-        // prevent user input during a walljump
-        // if (!this.canJump) {
-        //     this.input.keyboard.enabled = false;
-        //     this.input.keyboard.resetKeys();
-        // } else {
-        //     this.input.keyboard.enabled = true;
-        // }
+        
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);

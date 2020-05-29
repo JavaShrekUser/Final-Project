@@ -59,13 +59,25 @@ class Level1 extends Phaser.Scene {
         this.add.text(game.config.width / 2, 30, 'level1', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99998);
 
         // set up robot
-        this.robot = this.physics.add.sprite(150, 350, 'player').setOrigin(0);
+        this.robot = this.physics.add.sprite(100, 350, 'player').setOrigin(0);
         this.anims.create({
             key: 'Moving',
             repeat: -1,
             frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
             frameRate: 6
         });
+        
+        //tutorial
+        this.sign = new Door(this, 150, 300, 'tutorial').setOrigin(0, 0);
+        this.anims.create({
+            key: 'sign',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('tutorial', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
+        this.sign.setDepth(99999);
+        
+
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -129,6 +141,12 @@ class Level1 extends Phaser.Scene {
     }
 
     update() {
+        if (this.robot.x >120 && this.robot.x < 170){
+            this.sign.play('sign',true)
+            this.sign.alpha = 1;
+        }else{
+            this.sign.alpha = 0;
+        }
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {

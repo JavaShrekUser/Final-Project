@@ -7,6 +7,7 @@ class Load extends Phaser.Scene {
         // load player
         this.load.path = "assets/player/";
         this.load.spritesheet('player', 'slimeAnimation.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('tutorial', 'slimeAnimation.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
         // this.load.path = "assets/player/";
         // this.load.image('player', 'player.png');
         // load level1 assets

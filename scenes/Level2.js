@@ -187,33 +187,6 @@ class Level2 extends Phaser.Scene {
             this.sound.play('jump');
         }
 
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
-            this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if (this.robot.body.blocked.right) {
-                this.robot.body.setVelocityX(this.JUMP_VELOCITY);
-            }
-            if (this.robot.body.blocked.left) {
-                this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
-            }
-            this.canJump = false;
-            this.sound.play('bounce');
-        } else if (this.robot.body.onFloor()) {
-            this.canJump = true;
-        }
-
-        if (this.robot.body.blocked.up){
-            this.robot.setFlipY(true);
-        } else {
-            this.robot.setFlipY(false);
-        }
-
-        //prevent user input during a walljump
-        // if (!this.canJump) {
-        //     this.input.keyboard.enabled = false;
-        //     this.input.keyboard.resetKeys();
-        // } else {
-        //     this.input.keyboard.enabled = true;
-        // }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
