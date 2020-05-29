@@ -51,10 +51,10 @@ class Level2 extends Phaser.Scene {
 
 
         // variables and settings
-        this.ACCELERATION = 1500;
-        this.MAX_X_VEL = 300;   // pixels/second
+        this.ACCELERATION = 650;
+        this.MAX_X_VEL = 220;   // pixels/second
         this.MAX_Y_VEL = 700;
-        this.DRAG = 800;    // DRAG < ACCELERATION = icy slide
+        this.DRAG = 1000;    // DRAG < ACCELERATION = icy slide
         this.JUMP_VELOCITY = -750;
         this.physics.world.gravity.y = 3000;
 
@@ -117,7 +117,10 @@ class Level2 extends Phaser.Scene {
                     break;
                 case '3':
                     this.scene.start("level3Scene");
-                    break;
+                    break;   
+                case '4':
+                    this.scene.start("level4Scene");
+                    break;  
                 default:
                     break;
             }
@@ -127,7 +130,6 @@ class Level2 extends Phaser.Scene {
     }
 
     update() {
-        this.robot.play('Moving',true);
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
@@ -149,6 +151,7 @@ class Level2 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
+                this.robot.play('Moving',true);
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
@@ -161,6 +164,7 @@ class Level2 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
+                this.robot.play('Moving',true);
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
@@ -169,6 +173,7 @@ class Level2 extends Phaser.Scene {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
+            this.robot.play('Moving',false);
             //this.robot.anims.play('idle');
         }
 
@@ -181,10 +186,10 @@ class Level2 extends Phaser.Scene {
         if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             if (this.robot.body.blocked.right) {
-                this.robot.body.setVelocityX(this.JUMP_VELOCITY / 3);
+                this.robot.body.setVelocityX(this.JUMP_VELOCITY);
             }
             if (this.robot.body.blocked.left) {
-                this.robot.body.setVelocityX(-this.JUMP_VELOCITY / 3);
+                this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
             }
             this.canJump = false;
             this.sound.play('bounce');
@@ -208,7 +213,6 @@ class Level2 extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
-            // this.robot.setFlip(false, true);
         }
 
         // wrap physics object(s) .wrap(gameObject, padding)

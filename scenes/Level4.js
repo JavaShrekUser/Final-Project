@@ -1,32 +1,32 @@
-class Level3 extends Phaser.Scene {
+class Level4 extends Phaser.Scene {
     constructor() {
-        super("level3Scene");
+        super("level4Scene");
     }
 
     preload() {
-        this.load.image('green', './assets/Level3/green.png');  // preload assets
+        this.load.image('brown', './assets/Level4/brown.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
-        this.load.image("1bit_tiles3", "./assets/MainTiledSet.png");
+        this.load.image("1bit_tiles4", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
-        this.load.tilemapTiledJSON('platform_map3', './assets/Level3/Level3Map-1.json');
-        this.load.image('bg6', './assets/Level3/Level3-2.png');
+        this.load.tilemapTiledJSON('platform_map4', './assets/Level4/Level4Map.json');
+        // this.load.image('bg6', './assets/Level3/Level3-2.png');
 
     }
 
     create() {
 
         // add a tilemap
-        const map = this.add.tilemap("platform_map3");
+        const map = this.add.tilemap("platform_map4");
 
         // add a tileset to the map
-        const tileset = map.addTilesetImage("MainTiledSet", "1bit_tiles3");
+        const tileset = map.addTilesetImage("MainTiledSet", "1bit_tiles4");
 
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg5').setOrigin(0, 0);
+        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg7').setOrigin(0, 0);
 
         // create tilemap layers
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);
@@ -59,7 +59,8 @@ class Level3 extends Phaser.Scene {
         this.physics.world.gravity.y = 3000;
 
         // print Scene name
-        this.add.text(game.config.width / 2, 30, 'level3', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
+        this.add.text(game.config.width / 2, 30, 'level4', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
+        this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
         this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
 
@@ -79,7 +80,7 @@ class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.robot, platforms);
 
         //color squares
-        this.color = new Color(this, 100, 35, 'green').setOrigin(0, 0);
+        this.color = new Color(this, 100, 35, 'brown').setOrigin(0, 0);
         this.color.setDepth(99998);
 
         //door
@@ -236,7 +237,7 @@ class Level3 extends Phaser.Scene {
         obstacle.alpha = 0;
         this.color.y = 450;
         this.sound.play('levelup');
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
+        // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
         this.door.y = 220;
 
     }
@@ -253,8 +254,8 @@ function robotHit(robot, spike) {
     // Set velocity back to 0
     this.robot.setVelocity(0, 0);
     // Put the player back in its original position
-    this.robot.setX(260);
-    this.robot.setY(300);
+    this.robot.setX(150);
+    this.robot.setY(350);
     // Set the visibility to 0 i.e. hide the player
     this.robot.setAlpha(0);
     // Add a tween that 'blinks' until the player is gradually visible
