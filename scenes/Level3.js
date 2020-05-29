@@ -64,7 +64,7 @@ class Level3 extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(150, 350, 'player').setScale(1.2).setOrigin(0);
+        this.robot = this.physics.add.sprite(150, 350, 'player').setOrigin(0);
         this.anims.create({
             key: 'Moving',
             repeat: -1,
@@ -121,6 +121,10 @@ class Level3 extends Phaser.Scene {
                 case '4':
                     this.scene.start("level4Scene");
                     break;  
+                case '6':
+                    this.scene.start("endlevelScene");
+                    break;
+                    
                 default:
                     break;
             }

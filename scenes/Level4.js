@@ -14,7 +14,6 @@ class Level4 extends Phaser.Scene {
         this.load.image("1bit_tiles4", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map4', './assets/Level4/Level4Map.json');
-        // this.load.image('bg6', './assets/Level3/Level3-2.png');
 
     }
 
@@ -60,12 +59,11 @@ class Level4 extends Phaser.Scene {
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level4', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
-        this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
         this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(150, 350, 'player').setScale(1.2).setOrigin(0);
+        this.robot = this.physics.add.sprite(150, 350, 'player').setOrigin(0);
         this.anims.create({
             key: 'Moving',
             repeat: -1,
@@ -84,7 +82,7 @@ class Level4 extends Phaser.Scene {
         this.color.setDepth(99998);
 
         //door
-        this.door = new Door(this, 580, 440, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 480, 'door').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
 
@@ -122,6 +120,10 @@ class Level4 extends Phaser.Scene {
                 case '4':
                     this.scene.start("level4Scene");
                     break;  
+                case '6':
+                    this.scene.start("endlevelScene");
+                    break;
+                    
                 default:
                     break;
             }
@@ -174,7 +176,7 @@ class Level4 extends Phaser.Scene {
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
             this.robot.play('Moving',false);
-            //this.robot.anims.play('idle');
+            
         }
 
         // jump & bounce
