@@ -30,7 +30,7 @@ let config = {
             }
         }
     },
-    scene: [ Menu, Load, Level1, Level2,Level3]
+    scene: [ Menu, Load, Level1, Level2, Level3, Level4]
 };
 // reserve keyboard vars
 let keyRIGHT,keyR;
