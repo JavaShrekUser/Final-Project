@@ -14,7 +14,7 @@ class EndLevel extends Phaser.Scene {
         this.load.image("1bit_tiles6", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map6', './assets/EndLevel/EndLevel.json');
-
+        this.load.image('cloudPlat', './assets/EndLevel/cloud.png');
     }
 
     create() {
@@ -31,7 +31,7 @@ class EndLevel extends Phaser.Scene {
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
-        platforms.setCollisionByProperty({ collides: true});
+        platforms.setCollisionByProperty({ collides: true });
 
 
         // trapLayer.setCollisionByExclusion(-1,true);
@@ -68,7 +68,7 @@ class EndLevel extends Phaser.Scene {
         this.anims.create({
             key: 'Moving',
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
+            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3, first: 0 }),
             frameRate: 6
         });
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
@@ -77,8 +77,38 @@ class EndLevel extends Phaser.Scene {
 
         this.physics.world.bounds.setTo(0, 0, map.widthInPixels, map.heightInPixels);
 
+        // set up cloudPlat
+        this.cloud1 = this.physics.add.sprite(250, 300, 'cloudPlat').setScale(SCALE).setOrigin(0);
+        this.cloud1.body.immovable = true;
+        this.cloud1.body.allowGravity = false;
+        this.canRefresh1 = true;
+
+        this.cloud2 = this.physics.add.sprite(350, 350, 'cloudPlat').setScale(SCALE).setOrigin(0);
+        this.cloud2.body.immovable = true;
+        this.cloud2.body.allowGravity = false;
+        this.canRefresh2 = true;
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
+        this.physics.add.collider(this.cloud1, this.robot, cloud1Explode, null, this);
+        this.physics.add.collider(this.cloud2, this.robot, cloud2Explode, null, this);
+
+        const spikeObjects = map.getObjectLayer('Trap')['objects'];
+        this.spikes = this.physics.add.group({
+            allowGravity: false,
+            immovable: true
+        });
+        spikeObjects.forEach(spikeObject => {
+            // Add new spikes to our sprite group
+            const spike = this.spikes.create(spikeObject.x + 18, spikeObject.y, 'Trap').setOrigin(1, 1);
+
+            this.physics.add.collider(this.robot, this.spikes, robotHit, null, this);
+        });
+
+        // timer for cloudPlat
+        this.timer1 = 0;
+        this.time.addEvent({ delay: 100, callback: this.onEvent1, callbackScope: this, loop: true });
+        this.timer2 = 0;
+        this.time.addEvent({ delay: 100, callback: this.onEvent2, callbackScope: this, loop: true });
 
         //color squares
         this.color = new Color(this, 100, 35, 'brown').setOrigin(0, 0);
@@ -93,21 +123,6 @@ class EndLevel extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
-        this.spikes = this.physics.add.group({
-            allowGravity: false,
-            immovable: true
-        });
-
-        const spikeObjects = map.getObjectLayer('Trap')['objects'];
-
-        spikeObjects.forEach(spikeObject => {
-            // Add new spikes to our sprite group
-            const spike = this.spikes.create(spikeObject.x + 18, spikeObject.y, 'Trap').setOrigin(1, 1);
-
-            this.physics.add.collider(this.robot, this.spikes, robotHit, null, this);
-
-        });
-
         //cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
             switch (event.key) {
@@ -119,14 +134,14 @@ class EndLevel extends Phaser.Scene {
                     break;
                 case '3':
                     this.scene.start("level3Scene");
-                    break;   
+                    break;
                 case '4':
                     this.scene.start("level4Scene");
-                    break;  
+                    break;
                 case '6':
                     this.scene.start("endlevelScene");
                     break;
-                    
+
                 default:
                     break;
             }
@@ -148,7 +163,7 @@ class EndLevel extends Phaser.Scene {
         }
 
         if (this.checkCollision(this.robot, this.door)) {
-            this.doorExplode(this.door); 
+            this.doorExplode(this.door);
             // this.robotExplode(this.robot.x,this.robot.y);
         }
 
@@ -157,10 +172,10 @@ class EndLevel extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
                 // this.robot.body.setVelocityX(0);
                 // play walking sound
-                if (this.robot.body.onFloor()) {
+                if (this.robot.body.onFloor() || this.robot.body.touching.down) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                this.robot.play('Moving', true);
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
@@ -170,10 +185,10 @@ class EndLevel extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
                 // this.robot.body.setVelocityX(0);
                 // play walking sound
-                if (this.robot.body.onFloor()) {
+                if (this.robot.body.onFloor() || this.robot.body.touching.down) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                this.robot.play('Moving', true);
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
@@ -182,31 +197,35 @@ class EndLevel extends Phaser.Scene {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
-            this.robot.play('Moving',false);
-            
+            this.robot.play('Moving', false);
+
         }
 
         // jump & bounce
-        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if ((this.robot.body.onFloor() || this.robot.body.touching.down)
+            && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
 
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left) && !this.robot.body.onFloor() && this.canJump) {
+        if ((this.robot.body.blocked.right || this.robot.body.blocked.left
+            || this.robot.body.touching.right || this.robot.body.touching.left)
+            && (!this.robot.body.onFloor() || this.robot.body.touching.down)
+            && this.canJump) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if (this.robot.body.blocked.right) {
+            if (this.robot.body.blocked.right || this.robot.body.touching.right) {
                 this.robot.body.setVelocityX(this.JUMP_VELOCITY);
             }
-            if (this.robot.body.blocked.left) {
+            if (this.robot.body.blocked.left || this.robot.body.touching.left) {
                 this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
             }
             this.canJump = false;
             this.sound.play('bounce');
-        } else if (this.robot.body.onFloor()) {
+        } else if (this.robot.body.onFloor() || this.robot.body.touching.down) {
             this.canJump = true;
         }
 
-        if (this.robot.body.blocked.up){
+        if (this.robot.body.blocked.up) {
             this.robot.setFlipY(true);
         } else {
             this.robot.setFlipY(false);
@@ -223,7 +242,7 @@ class EndLevel extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
         }
-        
+
         // wrap physics object(s) .wrap(gameObject, padding)
         this.physics.world.wrap(this.robot, this.robot.width / 2);
     }
@@ -251,13 +270,40 @@ class EndLevel extends Phaser.Scene {
 
     }
 
-    doorExplode(obstacle){
+    doorExplode(obstacle) {
         obstacle.alpha = 0;
         this.scene.start('level4Scene');
 
     }
 
-
+    onEvent1() {
+        if (this.timer1 > 0) {
+            this.timer1 -= 1;
+        }
+        if (this.timer1 == 6) {
+            this.cloud1.x = -250;
+            this.cloud1.alpha = 0;
+        }
+        if (this.timer1 == 0) {
+            this.cloud1.x = 250;
+            this.cloud1.alpha = 1;
+            this.canRefresh1 = true;
+        }
+    }
+    onEvent2() {
+        if (this.timer2 > 0) {
+            this.timer2 -= 1;
+        }
+        if (this.timer2 == 6) {
+            this.cloud2.x = -250;
+            this.cloud2.alpha = 0;
+        }
+        if (this.timer2 == 0) {
+            this.cloud2.x = 350;
+            this.cloud2.alpha = 1;
+            this.canRefresh2 = true;
+        }
+    }
 }
 function robotHit(robot, spike) {
     // Set velocity back to 0
@@ -275,4 +321,17 @@ function robotHit(robot, spike) {
         ease: 'Linear',
         repeat: 5,
     });
+}
+
+function cloud1Explode() {
+    if (this.canRefresh1) {
+        this.timer1 = 10;
+        this.canRefresh1 = false;
+    }
+}
+function cloud2Explode() {
+    if (this.canRefresh2) {
+        this.timer2 = 10;
+        this.canRefresh2 = false;
+    }
 }
