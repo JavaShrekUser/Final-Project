@@ -4,7 +4,7 @@ class Level1 extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('black', './assets/Level1/black.png');      //preload assets
+        // this.load.image('black', './assets/Level1/black.png');      //preload assets
         this.load.image('bg3', './assets/Level1/Level1-2.png');
         this.load.image('door','./assets/door.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
@@ -16,6 +16,8 @@ class Level1 extends Phaser.Scene {
         this.load.image("1bit_tiles", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map', './assets/Level1/Level1Map.json');
+        this.load.spritesheet('black', './assets/Level1/black.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
+        
         
 
     }
@@ -66,6 +68,16 @@ class Level1 extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
             frameRate: 6
         });
+        this.anims.create({
+            key: 'Moving2',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player1', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
+        
+        this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
+        this.robot.setCollideWorldBounds(true);
+        this.robot.setDepth(99999);
         
         //tutorial
         this.sign = new Door(this, 150, 300, 'tutorial').setOrigin(0, 0);
@@ -77,17 +89,19 @@ class Level1 extends Phaser.Scene {
         });
         this.sign.setDepth(99999);
         
-
-        this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
-        this.robot.setCollideWorldBounds(true);
-        this.robot.setDepth(99999);
-
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
 
         //color squares
-        this.color = new Color(this, 370, 410, 'black').setOrigin(0, 0);
+        this.color = new Color(this, 370, 390, 'black').setOrigin(0, 0);
+        this.anims.create({
+            key: 'gem1',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('black', {start: 0, end: 11, first: 0}),
+            frameRate: 8
+        });
         this.color.setDepth(99999);
+        
 
         //door
         this.door = new Door(this, 580, 0, 'door').setOrigin(0, 0);
@@ -147,6 +161,9 @@ class Level1 extends Phaser.Scene {
         }else{
             this.sign.alpha = 0;
         }
+        this.color.play('gem1',true);
+
+        
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
@@ -168,12 +185,15 @@ class Level1 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving2',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
-            // play(key [, ignoreIfPlaying] [, startFrame])
-            // this.robot.anims.play('walk', true);
+
         } else if (cursors.right.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
                 this.robot.body.setVelocityX(0);
@@ -181,17 +201,23 @@ class Level1 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving2',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
-            // this.robot.anims.play('walk', true);
+
         } else {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
             this.robot.play('Moving',false);
-            //this.robot.anims.play('idle');
+            if (this.color.y >400 ){
+                this.robot.play('Moving2',true);
+            }
         }
 
         // jump & bounce
@@ -224,6 +250,7 @@ class Level1 extends Phaser.Scene {
         this.sound.play('levelup');
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
         this.door.y = 356;
+        this.robot.setTexture('player1')
 
     }
 

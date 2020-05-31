@@ -4,7 +4,7 @@ class Level2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('yellow', './assets/Level2/yellow.png');  // preload assets
+        // this.load.image('yellow', './assets/Level2/yellow.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -15,6 +15,7 @@ class Level2 extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map2', './assets/Level2/Level2Map-2.json');
         this.load.image('bg4', './assets/Level2/Level2-2.png');
+        this.load.spritesheet('yellow', './assets/Level2/yellow.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
 
     }
 
@@ -71,6 +72,12 @@ class Level2 extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
             frameRate: 6
         });
+        this.anims.create({
+            key: 'Moving3',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player2', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -79,8 +86,14 @@ class Level2 extends Phaser.Scene {
         this.physics.add.collider(this.robot, platforms);
 
         //color squares
-        this.color = new Color(this, 600, 180, 'yellow').setOrigin(0, 0);
-        this.color.setDepth(99998);
+        this.color = new Color(this, 600, 160, 'yellow').setOrigin(0, 0);
+        this.anims.create({
+            key: 'gem2',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('yellow', {start: 0, end: 11, first: 0}),
+            frameRate: 8
+        });
+        this.color.setDepth(99999);
 
         //door
         this.door = new Door(this, 580, 470, 'door').setOrigin(0, 0);
@@ -134,6 +147,10 @@ class Level2 extends Phaser.Scene {
     }
 
     update() {
+        this.color.play('gem2',true);
+        // if (this.color.y >400 ){
+        //     this.robot.setTexture('player1');
+        // }
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
@@ -155,30 +172,41 @@ class Level2 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving3',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
+                
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
-            // play(key [, ignoreIfPlaying] [, startFrame])
-            //this.robot.anims.play('walk', true);
+
         } else if (cursors.right.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-                // this.robot.body.setVelocityX(0);
+
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving3',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
-            //this.robot.anims.play('walk', true);
+
         } else {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
             this.robot.play('Moving',false);
-            //this.robot.anims.play('idle');
+            if (this.color.y >400 ){
+                this.robot.play('Moving3',true);
+            }
+            
         }
 
         // jump & bounce

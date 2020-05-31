@@ -4,7 +4,7 @@ class EndLevel extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('brown', './assets/Level4/brown.png');  // preload assets
+        // this.load.image('brown', './assets/Level4/brown.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -15,6 +15,8 @@ class EndLevel extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map6', './assets/EndLevel/EndLevel.json');
         this.load.image('cloudPlat', './assets/EndLevel/cloud.png');
+        this.load.spritesheet('red', './assets/EndLevel/red.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
+        
     }
 
     create() {
@@ -71,6 +73,12 @@ class EndLevel extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3, first: 0 }),
             frameRate: 6
         });
+        this.anims.create({
+            key: 'Moving7',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player6', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -111,8 +119,14 @@ class EndLevel extends Phaser.Scene {
         this.time.addEvent({ delay: 100, callback: this.onEvent2, callbackScope: this, loop: true });
 
         //color squares
-        this.color = new Color(this, 100, 35, 'brown').setOrigin(0, 0);
-        this.color.setDepth(99998);
+        this.color = new Color(this, 100, 35, 'red').setOrigin(0, 0);
+        this.anims.create({
+            key: 'gem6',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('red', {start: 0, end: 11, first: 0}),
+            frameRate: 8
+        });
+        this.color.setDepth(99999);
 
         //door
         this.door = new Door(this, 580, 480, 'door').setOrigin(0, 0);
@@ -155,6 +169,8 @@ class EndLevel extends Phaser.Scene {
     }
 
     update() {
+        this.color.play('gem6',true);
+
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
@@ -175,7 +191,11 @@ class EndLevel extends Phaser.Scene {
                 if (this.robot.body.onFloor() || this.robot.body.touching.down) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving', true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving7',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
@@ -188,7 +208,11 @@ class EndLevel extends Phaser.Scene {
                 if (this.robot.body.onFloor() || this.robot.body.touching.down) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving', true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving7',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
@@ -197,7 +221,10 @@ class EndLevel extends Phaser.Scene {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
-            this.robot.play('Moving', false);
+            this.robot.play('Moving',false);
+            if (this.color.y >400 ){
+                this.robot.play('Moving7',true);
+            }
 
         }
 
@@ -272,7 +299,7 @@ class EndLevel extends Phaser.Scene {
 
     doorExplode(obstacle) {
         obstacle.alpha = 0;
-        this.scene.start('level4Scene');
+        this.scene.start('endlevelScene');
 
     }
 

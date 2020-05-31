@@ -4,7 +4,7 @@ class Level3 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('green', './assets/Level3/green.png');  // preload assets
+        // this.load.image('green', './assets/Level3/green.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -15,6 +15,7 @@ class Level3 extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map3', './assets/Level3/Level3Map-1.json');
         this.load.image('bg6', './assets/Level3/Level3-2.png');
+        this.load.spritesheet('green', './assets/Level3/green.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
 
     }
 
@@ -71,6 +72,12 @@ class Level3 extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
             frameRate: 6
         });
+        this.anims.create({
+            key: 'Moving4',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player3', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -89,8 +96,14 @@ class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.robot, platforms);
 
         //color squares
-        this.color = new Color(this, 100, 35, 'green').setOrigin(0, 0);
-        this.color.setDepth(99998);
+        this.color = new Color(this, 100, 15, 'green').setOrigin(0, 0);
+        this.anims.create({
+            key: 'gem3',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('green', {start: 0, end: 11, first: 0}),
+            frameRate: 8
+        });
+        this.color.setDepth(99999);
 
         //door
         this.door = new Door(this, 580, 440, 'door').setOrigin(0, 0);
@@ -144,6 +157,8 @@ class Level3 extends Phaser.Scene {
     }
 
     update() {
+        this.color.play('gem3',true);
+
         if (this.robot.x >400 && this.robot.x < 500){
             this.sign.play('sign',true)
             this.sign.alpha = 1;
@@ -165,35 +180,44 @@ class Level3 extends Phaser.Scene {
         // check keyboard input
         if (cursors.left.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
-                // this.robot.body.setVelocityX(0);
+
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving4',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
-            // play(key [, ignoreIfPlaying] [, startFrame])
-            //this.robot.anims.play('walk', true);
+
         } else if (cursors.right.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-                // this.robot.body.setVelocityX(0);
+
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving4',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
-            //this.robot.anims.play('walk', true);
+
         } else {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
             this.robot.play('Moving',false);
-            //this.robot.anims.play('idle');
+            if (this.color.y >400 ){
+                this.robot.play('Moving4',true);
+            }
         }
 
         // jump & bounce

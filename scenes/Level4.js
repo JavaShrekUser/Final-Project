@@ -4,7 +4,7 @@ class Level4 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('brown', './assets/Level4/brown.png');  // preload assets
+        // this.load.image('brown', './assets/Level4/brown.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -14,6 +14,7 @@ class Level4 extends Phaser.Scene {
         this.load.image("1bit_tiles4", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map4', './assets/Level4/Level4Map.json');
+        this.load.spritesheet('brown', './assets/Level4/brown.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
 
     }
 
@@ -70,6 +71,12 @@ class Level4 extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3, first: 0}),
             frameRate: 6
         });
+        this.anims.create({
+            key: 'Moving5',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('player4', {start: 0, end: 3, first: 0}),
+            frameRate: 6
+        });
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -78,8 +85,14 @@ class Level4 extends Phaser.Scene {
         this.physics.add.collider(this.robot, platforms);
 
         //color squares
-        this.color = new Color(this, 100, 35, 'brown').setOrigin(0, 0);
-        this.color.setDepth(99998);
+        this.color = new Color(this, 50, 85, 'brown').setOrigin(0, 0);
+        this.anims.create({
+            key: 'gem4',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('brown', {start: 0, end: 11, first: 0}),
+            frameRate: 8
+        });
+        this.color.setDepth(99999);
 
         //door
         this.door = new Door(this, 580, 480, 'door').setOrigin(0, 0);
@@ -133,6 +146,8 @@ class Level4 extends Phaser.Scene {
     }
 
     update() {
+        this.color.play('gem4',true);
+
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
@@ -153,7 +168,11 @@ class Level4 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving5',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
@@ -166,7 +185,11 @@ class Level4 extends Phaser.Scene {
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
                 }
-                this.robot.play('Moving',true);
+                if (this.color.y >400 ){
+                    this.robot.play('Moving5',true);
+                }else{
+                    this.robot.play('Moving',true);
+                }
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
@@ -176,6 +199,9 @@ class Level4 extends Phaser.Scene {
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
             this.robot.play('Moving',false);
+            if (this.color.y >400 ){
+                this.robot.play('Moving5',true);
+            }
             
         }
 
@@ -240,13 +266,13 @@ class Level4 extends Phaser.Scene {
         this.color.y = 450;
         this.sound.play('levelup');
         // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
-        this.door.y = 220;
+        this.door.y = 70;
 
     }
 
     doorExplode(obstacle){
         obstacle.alpha = 0;
-        this.scene.start('level4Scene');
+        this.scene.start('endlevelScene');
 
     }
 
