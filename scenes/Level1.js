@@ -23,12 +23,12 @@ class Level1 extends Phaser.Scene {
 
         this.bgm = this.sound.add('choco',{     //add background music
             mute : false,
-            volume : 0.5,
-            rate : 3,
+            volume : 0.3,
+            rate : 1,
             loop : true
         });
 
-        this.sound.play('choco');
+        this.bgm.play();
 
         // add a tilemap
         const map = this.add.tilemap("platform_map");
@@ -251,6 +251,7 @@ class Level1 extends Phaser.Scene {
         obstacle.alpha = 0;
         this.sound.play('door');
         this.scene.start('level2Scene');
+        
         
 
     }
