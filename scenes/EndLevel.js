@@ -35,21 +35,7 @@ class EndLevel extends Phaser.Scene {
 
         platforms.setCollisionByProperty({ collides: true });
 
-
         // trapLayer.setCollisionByExclusion(-1,true);
-
-
-        // define a render debug so we can see the tilemap's collision bounds
-        // const debugGraphics = this.add.graphics().setAlpha(0.75);
-        // platforms.renderDebug(debugGraphics, {
-        //     tileColor: null,    // color of non-colliding tiles
-        //     collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),    // color of colliding tiles
-        //     faceColor: new Phaser.Display.Color(40, 39, 37, 255)                // color of colliding face edges
-        // });
-
-        // set map collision (two styles: uncomment *one* of the two lines below)
-        //groundLayer.setCollision([19, 20, 21, 67, 69, 120]);
-
 
         // variables and settings
         this.ACCELERATION = 650;
@@ -66,13 +52,7 @@ class EndLevel extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(150, 350, 'player').setOrigin(0);
-        this.anims.create({
-            key: 'Moving',
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3, first: 0 }),
-            frameRate: 6
-        });
+        this.robot = this.physics.add.sprite(150, 350, 'player4').setOrigin(0);
         this.anims.create({
             key: 'Moving7',
             repeat: -1,
@@ -165,7 +145,7 @@ class EndLevel extends Phaser.Scene {
 
         // setup camera
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-        this.cameras.main.startFollow(this.robot, true, 0.25, 0.25); // (target, [,roundPixels][,lerpX][,lerpY])
+        this.cameras.main.startFollow(this.robot, true, 0.25, 0.25);
     }
 
     update() {
@@ -175,18 +155,15 @@ class EndLevel extends Phaser.Scene {
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
             this.door.alpha = 1;
-            // this.robotExplode(this.robot.x,this.robot.y);
         }
 
         if (this.checkCollision(this.robot, this.door)) {
             this.doorExplode(this.door);
-            // this.robotExplode(this.robot.x,this.robot.y);
         }
 
         // check keyboard input
         if (cursors.left.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
-                // this.robot.body.setVelocityX(0);
                 // play walking sound
                 if (this.robot.body.onFloor() || this.robot.body.touching.down) {
                     this.sound.play('walk');
@@ -194,16 +171,14 @@ class EndLevel extends Phaser.Scene {
                 if (this.color.y >400 ){
                     this.robot.play('Moving7',true);
                 }else{
-                    this.robot.play('Moving',true);
+                    this.robot.play('Moving5',true);
                 }
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
             this.robot.setFlip(true, false);
-            // play(key [, ignoreIfPlaying] [, startFrame])
-            //this.robot.anims.play('walk', true);
+
         } else if (cursors.right.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-                // this.robot.body.setVelocityX(0);
                 // play walking sound
                 if (this.robot.body.onFloor() || this.robot.body.touching.down) {
                     this.sound.play('walk');
@@ -211,17 +186,16 @@ class EndLevel extends Phaser.Scene {
                 if (this.color.y >400 ){
                     this.robot.play('Moving7',true);
                 }else{
-                    this.robot.play('Moving',true);
+                    this.robot.play('Moving5',true);
                 }
             }
             this.robot.resetFlip();
             this.robot.body.setAccelerationX(this.ACCELERATION);
-            //this.robot.anims.play('walk', true);
         } else {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
-            this.robot.play('Moving',false);
+            this.robot.play('Moving5',false);
             if (this.color.y >400 ){
                 this.robot.play('Moving7',true);
             }
@@ -257,14 +231,6 @@ class EndLevel extends Phaser.Scene {
         } else {
             this.robot.setFlipY(false);
         }
-
-        // prevent user input during a walljump
-        // if (!this.canJump) {
-        //     this.input.keyboard.enabled = false;
-        //     this.input.keyboard.resetKeys();
-        // } else {
-        //     this.input.keyboard.enabled = true;
-        // }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);

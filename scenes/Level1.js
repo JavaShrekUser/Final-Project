@@ -4,7 +4,7 @@ class Level1 extends Phaser.Scene {
     }
 
     preload(){
-        // this.load.image('black', './assets/Level1/black.png');      //preload assets
+        //preload assets
         this.load.image('bg3', './assets/Level1/Level1-2.png');
         this.load.image('door','./assets/door.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
@@ -17,9 +17,6 @@ class Level1 extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map', './assets/Level1/Level1Map.json');
         this.load.spritesheet('black', './assets/Level1/black.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
-        
-        
-
     }
 
     create() {
@@ -38,7 +35,6 @@ class Level1 extends Phaser.Scene {
 
         // add a tileset to the map
         const tileset = map.addTilesetImage("MainTiledSet", "1bit_tiles");
-
 
         // create tilemap layers
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0);
@@ -77,7 +73,7 @@ class Level1 extends Phaser.Scene {
         
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
-        this.robot.setDepth(99999);
+        this.robot.setDepth(99998);
         
         //tutorial
         this.sign = new Door(this, 150, 300, 'tutorial').setOrigin(0, 0);
@@ -169,12 +165,10 @@ class Level1 extends Phaser.Scene {
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
             this.door.alpha = 1;
-            // this.robotExplode(this.robot.x,this.robot.y);
         }
 
         if (this.checkCollision(this.robot, this.door)) {
             this.doorExplode(this.door);
-            // this.robotExplode(this.robot.x,this.robot.y);
         }
 
         // check keyboard input
@@ -221,7 +215,6 @@ class Level1 extends Phaser.Scene {
         }
 
         // jump & bounce
-
         if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
@@ -242,7 +235,6 @@ class Level1 extends Phaser.Scene {
         }
     }
 
-    //Destoring the door when collides
     colorExplode(obstacle) {
         //temporarily hide obstacle
         obstacle.alpha = 0;
@@ -254,10 +246,12 @@ class Level1 extends Phaser.Scene {
 
     }
 
+    //Destoring the door when collides
     doorExplode(obstacle) {    // change level 
         obstacle.alpha = 0;
         this.sound.play('door');
         this.scene.start('level2Scene');
+        
 
     }
 }

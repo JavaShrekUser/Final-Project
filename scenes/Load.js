@@ -6,14 +6,14 @@ class Load extends Phaser.Scene {
     preload() {
         // load player
         this.load.path = "assets/player/";
-        this.load.spritesheet('player', 'slimeAnimation.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('tutorial', 'slimeAnimation.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('player1', 'animationGrey.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('player2', 'animationYellow.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('player3', 'animationGreen.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('player4', 'animationBrown.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('player5', 'animationBlue.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
-        this.load.spritesheet('player6', 'animationBlueHeart.png', { frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player', 'animationWhite.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('tutorial', 'animationWhite.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player1', 'animationGrey.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player2', 'animationYellow.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player3', 'animationGreen.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player4', 'animationBrown.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player5', 'animationBlue.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('player6', 'animationBlueHeart.png', { frameWidth: 32, frameHeight: 22, startFrame: 0, endFrame: 3 });
 
         // load level1 assets
         this.load.path = "assets/Level1/";
