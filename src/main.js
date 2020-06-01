@@ -23,14 +23,14 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false,
+            debug: true,
             gravity: {
                 x: 0,
                 y: 0
             }
         }
     },
-    scene: [ Menu, Load, Level1, Level2, Level3, Level4, EndLevel]
+    scene: [ Menu, Load, Level1, Level2, Level3, Level4, Level5, EndLevel]
 };
 // reserve keyboard vars
 let keyRIGHT,keyR;
