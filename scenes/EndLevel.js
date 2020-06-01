@@ -52,7 +52,7 @@ class EndLevel extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(150, 350, 'player4').setOrigin(0);
+        this.robot = this.physics.add.sprite(150, 350, 'player5').setOrigin(0);
         this.anims.create({
             key: 'Moving7',
             repeat: -1,
