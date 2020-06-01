@@ -113,6 +113,9 @@ class Level4 extends Phaser.Scene {
                 case '4':
                     this.scene.start("level4Scene");
                     break;  
+                case '5':
+                    this.scene.start("level5Scene");
+                    break;
                 case '6':
                     this.scene.start("endlevelScene");
                     break;
@@ -237,7 +240,7 @@ class Level4 extends Phaser.Scene {
 
     doorExplode(obstacle){
         obstacle.alpha = 0;
-        this.scene.start('endlevelScene');
+        this.scene.start('level5Scene');
 
     }
 
