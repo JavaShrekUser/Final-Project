@@ -174,7 +174,7 @@ class EndLevel extends Phaser.Scene {
                 if (this.color.y >400 ){
                     this.robot.play('Moving7',true);
                 }else{
-                    this.robot.play('Moving5',true);
+                    this.robot.play('Moving6',true);
                 }
             }
             this.robot.body.setAccelerationX(-this.ACCELERATION);
@@ -189,7 +189,7 @@ class EndLevel extends Phaser.Scene {
                 if (this.color.y >400 ){
                     this.robot.play('Moving7',true);
                 }else{
-                    this.robot.play('Moving5',true);
+                    this.robot.play('Moving6',true);
                 }
             }
             this.robot.resetFlip();
@@ -198,7 +198,7 @@ class EndLevel extends Phaser.Scene {
             // set acceleration to 0 so DRAG will take over
             this.robot.body.setAccelerationX(0);
             this.robot.body.setDragX(this.DRAG);
-            this.robot.play('Moving5',false);
+            this.robot.play('Moving6',false);
             if (this.color.y >400 ){
                 this.robot.play('Moving7',true);
             }
