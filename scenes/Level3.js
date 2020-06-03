@@ -6,6 +6,7 @@ class Level3 extends Phaser.Scene {
     preload() {
         // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
+        this.load.image('door3','./assets/Level3/door3.png');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
@@ -13,6 +14,8 @@ class Level3 extends Phaser.Scene {
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles3", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
+        this.load.image("Level3CoverTop","./assets/Level3/Level3CoverTop.png");
+        this.load.image("Level3CoverBot","./assets/Level3/Level3CoverBot.png");
         this.load.tilemapTiledJSON('platform_map3', './assets/Level3/Level3Map-1.json');
         this.load.image('bg6', './assets/Level3/Level3-2.png');
         this.load.spritesheet('green', './assets/Level3/green.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
@@ -86,7 +89,7 @@ class Level3 extends Phaser.Scene {
         this.color.setDepth(99999);
 
         //door
-        this.door = new Door(this, 580, 440, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 440, 'door3').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
 
@@ -151,7 +154,6 @@ class Level3 extends Phaser.Scene {
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
-            this.door.alpha = 1;
         }
 
         if (this.checkCollision(this.robot, this.door)) {
@@ -249,13 +251,37 @@ class Level3 extends Phaser.Scene {
         obstacle.alpha = 0;
         this.color.y = 450;
         this.sound.play('levelup');
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
-        this.door.y = 220;
+
+        this.particleManager = this.add.particles('cross');
+        this.gravityEmitter = this.particleManager.createEmitter({
+            x: 100,
+            y: 15,
+            // angle: { min: 180, max: 360 }, // try steps: 1000
+            speed: 1500,
+            // { min: 1000, max: 5000, steps: 500000 },
+            // gravityY: 350,
+            lifespan: 3000,
+            quantity: 51,
+            scale: { start: 100, end: 8 },
+            tint: [ 0x72D572 ],
+            on : true,
+        });
+        this.time.delayedCall(500, ()=>{
+            this.gravityEmitter.stop();
+            this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
+            this.door.y = 220;
+            this.door.alpha = 1;
+            this.mainBack1 = this.add.tileSprite(0, 0, 640, 480, 'Level3CoverTop').setOrigin(0, 0).setDepth(1);
+            this.mainBack2 = this.add.tileSprite(0, 0, 640, 480, 'Level3CoverBot').setOrigin(0, 0).setDepth(99997);
+        });
+
+        this.particleManager.setDepth(99999);
 
     }
 
     doorExplode(obstacle){
         obstacle.alpha = 0;
+        this.sound.play('door');
         this.scene.start('level4Scene');
 
     }

@@ -6,7 +6,7 @@ class Level1 extends Phaser.Scene {
     preload(){
         //preload assets
         this.load.image('bg3', './assets/Level1/Level1-2.png');
-        this.load.image('door','./assets/door.png');
+        this.load.image('door1','./assets/Level1/door1.png');
         this.load.audio('choco','./assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
@@ -17,6 +17,8 @@ class Level1 extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map', './assets/Level1/Level1Map.json');
         this.load.spritesheet('black', './assets/Level1/black.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
+        this.load.path = './assets/';
+        this.load.image('cross', 'white_pixel.png');
     }
 
     create() {
@@ -41,6 +43,7 @@ class Level1 extends Phaser.Scene {
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true });
+
 
         // variables and settings
         this.ACCELERATION = 650;
@@ -100,7 +103,7 @@ class Level1 extends Phaser.Scene {
         
 
         //door
-        this.door = new Door(this, 580, 0, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 0, 'door1').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
         
@@ -167,7 +170,6 @@ class Level1 extends Phaser.Scene {
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
-            this.door.alpha = 1;
         }
 
         if (this.checkCollision(this.robot, this.door)) {
@@ -238,20 +240,40 @@ class Level1 extends Phaser.Scene {
         }
     }
 
-    colorExplode(obstacle) {
+    colorExplode(color) {
         //temporarily hide obstacle
-        obstacle.alpha = 0;
+        this.color.alpha = 0;
         this.color.y = 450
         this.sound.play('levelup');
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
-        this.door.y = 356;
-        this.robot.setTexture('player1')
+
+        this.particleManager = this.add.particles('cross');
+        this.gravityEmitter = this.particleManager.createEmitter({
+            x: 380,
+            y: 400,
+            // angle: { min: 180, max: 360 }, // try steps: 1000
+            speed: 1500,
+            // { min: 1000, max: 5000, steps: 500000 },
+            // gravityY: 350,
+            lifespan: 3000,
+            quantity: 50,
+            scale: { start: 100, end: 8 },
+            tint: [ 0x000000 ],
+            on : true,
+        });
+        this.time.delayedCall(500, ()=>{
+            this.gravityEmitter.stop();
+            this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
+            this.door.y = 356;
+            this.door.alpha = 1;
+        });
+
+        this.particleManager.setDepth(99999);
 
     }
 
     //Destoring the door when collides
     doorExplode(obstacle) {    // change level 
-        obstacle.alpha = 0;
+        this.door.alpha = 0;
         this.sound.play('door');
         this.scene.start('level2Scene');
         

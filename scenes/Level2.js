@@ -6,6 +6,7 @@ class Level2 extends Phaser.Scene {
     preload() {
         // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
+        this.load.image('door2','./assets/Level2/door2.png');
         this.load.audio('walk', './assets/sound/Walk.mp3');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
@@ -78,7 +79,7 @@ class Level2 extends Phaser.Scene {
         this.color.setDepth(99999);
 
         //door
-        this.door = new Door(this, 580, 470, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 470, 'door2').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
 
@@ -137,7 +138,6 @@ class Level2 extends Phaser.Scene {
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
-            this.door.alpha = 1;
         }
 
         if (this.checkCollision(this.robot, this.door)) {
@@ -220,13 +220,35 @@ class Level2 extends Phaser.Scene {
         obstacle.alpha = 0;
         this.color.y = 450;
         this.sound.play('levelup');
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg4').setOrigin(0, 0);
-        this.door.y = 389;
+
+        this.particleManager = this.add.particles('cross');
+        this.gravityEmitter = this.particleManager.createEmitter({
+            x: 600,
+            y: 160,
+            // angle: { min: 180, max: 360 }, // try steps: 1000
+            speed: 1500,
+            // { min: 1000, max: 5000, steps: 500000 },
+            // gravityY: 350,
+            lifespan: 3000,
+            quantity: 50,
+            scale: { start: 100, end: 8 },
+            tint: [ 0xFBF036 ],
+            on : true,
+        });
+        this.time.delayedCall(500, ()=>{
+            this.gravityEmitter.stop();
+            this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg4').setOrigin(0, 0);
+            this.door.y = 389;
+            this.door.alpha = 1;
+        });
+
+        this.particleManager.setDepth(99999);
 
     }
 
     doorExplode(obstacle) {
         obstacle.alpha = 0;
+        this.sound.play('door');
         this.scene.start('level3Scene');
 
     }

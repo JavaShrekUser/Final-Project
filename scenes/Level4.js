@@ -7,12 +7,16 @@ class Level4 extends Phaser.Scene {
         // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
+        this.load.image('door4','./assets/Level4/door4.png');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles4", "./assets/MainTiledSet.png");
         this.load.image('Trap', './assets/Trap.png');
+        this.load.image("Level4CoverTop","./assets/Level4/Level4CoverTop.png");
+        this.load.image("Level4CoverBot1","./assets/Level4/Level4CoverBot1.png");
+        this.load.image("Level4CoverBot2","./assets/Level4/Level4CoverBot2.png");
         this.load.tilemapTiledJSON('platform_map4', './assets/Level4/Level4Map.json');
         this.load.spritesheet('brown', './assets/Level4/brown.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
 
@@ -26,10 +30,10 @@ class Level4 extends Phaser.Scene {
         // add a tileset to the map
         const tileset = map.addTilesetImage("MainTiledSet", "1bit_tiles4");
 
-        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg7').setOrigin(0, 0);
+        this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg7').setOrigin(0, 0).setDepth(1);
 
         // create tilemap layers
-        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);
+        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99997);
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true});
@@ -47,6 +51,9 @@ class Level4 extends Phaser.Scene {
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level4', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
         this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
+
+        this.mainBack2 = this.add.tileSprite(0, 0, 640, 480, 'Level4CoverBot1').setOrigin(0, 0).setDepth(99999);
+        this.mainBack1 = this.add.tileSprite(0, 0, 640, 480, 'Level4CoverTop').setOrigin(0, 0).setDepth(2);
 
 
         // set up robot
@@ -75,7 +82,7 @@ class Level4 extends Phaser.Scene {
         this.color.setDepth(99999);
 
         //door
-        this.door = new Door(this, 580, 480, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 480, 'door4').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
 
@@ -134,7 +141,6 @@ class Level4 extends Phaser.Scene {
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
-            this.door.alpha = 1;
         }
 
         if (this.checkCollision(this.robot, this.door)) {
@@ -233,13 +239,36 @@ class Level4 extends Phaser.Scene {
         obstacle.alpha = 0;
         this.color.y = 450;
         this.sound.play('levelup');
-        // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
-        this.door.y = 70;
+
+        this.particleManager = this.add.particles('cross');
+        this.gravityEmitter = this.particleManager.createEmitter({
+            x: 50,
+            y: 85,
+            // angle: { min: 180, max: 360 }, // try steps: 1000
+            speed: 1500,
+            // { min: 1000, max: 5000, steps: 500000 },
+            // gravityY: 350,
+            lifespan: 3000,
+            quantity: 50,
+            scale: { start: 100, end: 8 },
+            tint: [ 0x8D6E63 ],
+            on : true,
+        });
+        this.time.delayedCall(500, ()=>{
+            this.gravityEmitter.stop();
+            // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
+            this.door.y = 70;
+            this.door.alpha = 1;
+            this.mainBack3 = this.add.tileSprite(0, 0, 640, 480, 'Level4CoverBot2').setOrigin(0, 0).setDepth(99998);
+        });
+
+        this.particleManager.setDepth(99999);
 
     }
 
     doorExplode(obstacle){
         obstacle.alpha = 0;
+        this.sound.play('door');
         this.scene.start('level5Scene');
 
     }

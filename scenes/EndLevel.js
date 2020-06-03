@@ -7,6 +7,7 @@ class EndLevel extends Phaser.Scene {
         // this.load.image('brown', './assets/Level4/brown.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
+        this.load.image('doorEnd','./assets/EndLevel/doorEnd.png');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
@@ -52,7 +53,7 @@ class EndLevel extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(150, 350, 'player5').setOrigin(0);
+        this.robot = this.physics.add.sprite(170, 1300, 'player5').setOrigin(0);
         this.anims.create({
             key: 'Moving7',
             repeat: -1,
@@ -109,7 +110,7 @@ class EndLevel extends Phaser.Scene {
         this.color.setDepth(99999);
 
         //door
-        this.door = new Door(this, 580, 480, 'door').setOrigin(0, 0);
+        this.door = new Door(this, 580, 480, 'doorEnd').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
 
@@ -212,21 +213,30 @@ class EndLevel extends Phaser.Scene {
             this.sound.play('jump');
         }
 
-        if ((this.robot.body.blocked.right || this.robot.body.blocked.left
-            || this.robot.body.touching.right || this.robot.body.touching.left)
-            && (!this.robot.body.onFloor() || this.robot.body.touching.down)
-            && this.canJump) {
-            this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            if (this.robot.body.blocked.right || this.robot.body.touching.right) {
-                this.robot.body.setVelocityX(this.JUMP_VELOCITY);
+        if (this.robot.y>960){
+            if ((this.robot.body.blocked.right || this.robot.body.blocked.left
+                || this.robot.body.touching.right || this.robot.body.touching.left)
+                && (!this.robot.body.onFloor() || this.robot.body.touching.down)
+                && this.canJump) {
+                this.robot.body.setVelocityY(this.JUMP_VELOCITY);
+                if (this.robot.body.blocked.right || this.robot.body.touching.right) {
+                    this.robot.body.setVelocityX(this.JUMP_VELOCITY);
+                }
+                if (this.robot.body.blocked.left || this.robot.body.touching.left) {
+                    this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
+                }
+                this.canJump = false;
+                this.sound.play('bounce');
+            } else if (this.robot.body.onFloor() || this.robot.body.touching.down) {
+                this.canJump = true;
             }
-            if (this.robot.body.blocked.left || this.robot.body.touching.left) {
-                this.robot.body.setVelocityX(-this.JUMP_VELOCITY);
-            }
-            this.canJump = false;
-            this.sound.play('bounce');
-        } else if (this.robot.body.onFloor() || this.robot.body.touching.down) {
-            this.canJump = true;
+        }
+        
+
+        if (this.robot.y<480){
+            this.physics.world.gravity.y = 2000;
+        }else{
+            this.physics.world.gravity.y = 3000;
         }
 
         if (this.robot.body.blocked.up) {
