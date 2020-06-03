@@ -33,7 +33,7 @@ class Level3 extends Phaser.Scene {
         this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg5').setOrigin(0, 0);
 
         // create tilemap layers
-        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);
+        const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99998);
         // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true});
@@ -272,7 +272,7 @@ class Level3 extends Phaser.Scene {
             this.door.y = 220;
             this.door.alpha = 1;
             this.mainBack1 = this.add.tileSprite(0, 0, 640, 480, 'Level3CoverTop').setOrigin(0, 0).setDepth(1);
-            this.mainBack2 = this.add.tileSprite(0, 0, 640, 480, 'Level3CoverBot').setOrigin(0, 0).setDepth(99997);
+            this.mainBack2 = this.add.tileSprite(0, 0, 640, 480, 'Level3CoverBot').setOrigin(0, 0).setDepth(99998);
         });
 
         this.particleManager.setDepth(99999);
