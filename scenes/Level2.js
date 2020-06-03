@@ -238,7 +238,8 @@ class Level2 extends Phaser.Scene {
         this.time.delayedCall(500, ()=>{
             this.gravityEmitter.stop();
             this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg4').setOrigin(0, 0);
-            this.door.y = 389;
+            this.door.x = 70
+            this.door.y = 329;
             this.door.alpha = 1;
         });
 
