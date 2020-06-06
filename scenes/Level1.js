@@ -17,6 +17,8 @@ class Level1 extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map', './assets/Level1/Level1Map.json');
         this.load.spritesheet('black', './assets/Level1/black.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
+        this.load.spritesheet('walkTuition', './assets/tutorial/walkTuition.png', { frameWidth: 640, frameHeight: 480, startFrame: 0, endFrame: 3 });
+        this.load.spritesheet('jumpTuition', './assets/tutorial/jumpTuition.png', { frameWidth: 640, frameHeight: 480, startFrame: 0, endFrame: 3 });
         this.load.path = './assets/';
         this.load.image('cross', 'white_pixel.png');
     }
@@ -79,14 +81,23 @@ class Level1 extends Phaser.Scene {
         this.robot.setDepth(99998);
         
         //tutorial
-        this.sign = new Door(this, 150, 300, 'tutorial').setOrigin(0, 0);
+        this.walkTuition = new Door(this, 0, 0, 'walkTuition').setOrigin(0, 0);
         this.anims.create({
-            key: 'sign',
+            key: 'walkTuition',
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('tutorial', {start: 0, end: 3, first: 0}),
-            frameRate: 6
+            frames: this.anims.generateFrameNumbers('walkTuition', {start: 0, end: 3, first: 0}),
+            frameRate: 3
         });
-        this.sign.setDepth(99999);
+        this.walkTuition.setDepth(99999);
+
+        this.jumpTuition = new Door(this, 0, 0, 'jumpTuition').setOrigin(0, 0);
+        this.anims.create({
+            key: 'jumpTuition',
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('jumpTuition', {start: 0, end: 1, first: 0}),
+            frameRate: 2
+        });
+        this.jumpTuition.setDepth(99999);
         
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
@@ -157,11 +168,19 @@ class Level1 extends Phaser.Scene {
     }
 
     update() {
-        if (this.robot.x >120 && this.robot.x < 170){
-            this.sign.play('sign',true)
-            this.sign.alpha = 1;
+        if (this.robot.x >95 && this.robot.x < 105){
+            this.walkTuition.play('walkTuition',true)
+            this.walkTuition.alpha = 1;
         }else{
-            this.sign.alpha = 0;
+            this.walkTuition.alpha = 0;
+        }
+        this.color.play('gem1',true);
+
+        if (this.robot.x >337 && this.robot.x < 415){
+            this.jumpTuition.play('jumpTuition',true)
+            this.jumpTuition.alpha = 1;
+        }else{
+            this.jumpTuition.alpha = 0;
         }
         this.color.play('gem1',true);
 
