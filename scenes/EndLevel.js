@@ -16,6 +16,10 @@ class EndLevel extends Phaser.Scene {
         this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map6', './assets/EndLevel/EndLevel.json');
         this.load.image('cloudPlat', './assets/EndLevel/cloud.png');
+        this.load.image("EndLevelCoverTop1","./assets/EndLevel/EndLevelCoverTop1.png");
+        this.load.image("EndLevelCoverBot1","./assets/EndLevel/EndLevelCoverBot1.png");
+        this.load.image("EndLevelCoverTop2","./assets/EndLevel/EndLevelCoverTop2.png");
+        this.load.image("EndLevelCoverBot2","./assets/EndLevel/EndLevelCoverBot2.png");
         this.load.spritesheet('red', './assets/EndLevel/red.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
         
     }
@@ -51,9 +55,14 @@ class EndLevel extends Phaser.Scene {
         this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
         this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
+        this.BotBack1 = this.add.tileSprite(0, 980 , 640, 480, 'EndLevelCoverTop1').setOrigin(0, 0).setDepth(99999);
+        this.BotBack2 = this.add.tileSprite(0, 980, 640, 480, 'EndLevelCoverBot1').setOrigin(0, 0).setDepth(99999);
+        this.MidBack1 = this.add.tileSprite(0, 500 , 640, 480, 'EndLevelCoverTop2').setOrigin(0, 0).setDepth(99999);
+        this.MidBack2 = this.add.tileSprite(0, 500, 640, 480, 'EndLevelCoverBot2').setOrigin(0, 0).setDepth(99999);
+
 
         // set up robot
-        this.robot = this.physics.add.sprite(170, 1300, 'player5').setOrigin(0);
+        this.robot = this.physics.add.sprite(1000, 200, 'player5').setOrigin(0);
         this.anims.create({
             key: 'Moving7',
             repeat: -1,
@@ -67,19 +76,26 @@ class EndLevel extends Phaser.Scene {
         this.physics.world.bounds.setTo(0, 0, map.widthInPixels, map.heightInPixels);
 
         // set up cloudPlat
-        this.cloud1 = this.physics.add.sprite(250, 300, 'cloudPlat').setScale(SCALE).setOrigin(0);
+        this.cloud1 = this.physics.add.sprite(240, 855, 'cloudPlat').setScale(1).setOrigin(0);
         this.cloud1.body.immovable = true;
         this.cloud1.body.allowGravity = false;
         this.canRefresh1 = true;
 
-        this.cloud2 = this.physics.add.sprite(350, 350, 'cloudPlat').setScale(SCALE).setOrigin(0);
+        this.cloud2 = this.physics.add.sprite(350, 715, 'cloudPlat').setScale(1).setOrigin(0);
         this.cloud2.body.immovable = true;
         this.cloud2.body.allowGravity = false;
         this.canRefresh2 = true;
+
+        this.cloud3 = this.physics.add.sprite(350, 715, 'cloudPlat').setScale(1).setOrigin(0);
+        this.cloud3.body.immovable = true;
+        this.cloud3.body.allowGravity = false;
+        this.canRefresh3 = true;
+
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
         this.physics.add.collider(this.cloud1, this.robot, cloud1Explode, null, this);
         this.physics.add.collider(this.cloud2, this.robot, cloud2Explode, null, this);
+        this.physics.add.collider(this.cloud3, this.robot, cloud3Explode, null, this);
 
         const spikeObjects = map.getObjectLayer('Trap')['objects'];
         this.spikes = this.physics.add.group({
@@ -98,9 +114,11 @@ class EndLevel extends Phaser.Scene {
         this.time.addEvent({ delay: 100, callback: this.onEvent1, callbackScope: this, loop: true });
         this.timer2 = 0;
         this.time.addEvent({ delay: 100, callback: this.onEvent2, callbackScope: this, loop: true });
+        this.timer3 = 0;
+        this.time.addEvent({ delay: 100, callback: this.onEvent3, callbackScope: this, loop: true });
 
         //color squares
-        this.color = new Color(this, 100, 35, 'red').setOrigin(0, 0);
+        this.color = new Color(this, 310, 99, 'red').setOrigin(0, 0);
         this.anims.create({
             key: 'gem6',
             repeat: -1,
@@ -110,7 +128,7 @@ class EndLevel extends Phaser.Scene {
         this.color.setDepth(99999);
 
         //door
-        this.door = new Door(this, 580, 480, 'doorEnd').setOrigin(0, 0);
+        this.door = new Door(this, 5800, 4800, 'doorEnd').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
 
@@ -148,7 +166,7 @@ class EndLevel extends Phaser.Scene {
         this.canJump = true;
 
         // setup camera
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels-20);
         this.cameras.main.startFollow(this.robot, true, 0.25, 0.25);
     }
 
@@ -158,7 +176,6 @@ class EndLevel extends Phaser.Scene {
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
             this.colorExplode(this.color);
-            this.door.alpha = 1;
         }
 
         if (this.checkCollision(this.robot, this.door)) {
@@ -233,10 +250,13 @@ class EndLevel extends Phaser.Scene {
         }
         
 
-        if (this.robot.y<480){
-            this.physics.world.gravity.y = 2000;
+        if (this.robot.y<600  ){
+            this.physics.world.gravity.y = 1800;
+
+         
         }else{
             this.physics.world.gravity.y = 3000;
+      
         }
 
         if (this.robot.body.blocked.up) {
@@ -271,8 +291,28 @@ class EndLevel extends Phaser.Scene {
         obstacle.alpha = 0;
         this.color.y = 450;
         this.sound.play('levelup');
-        // this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg6').setOrigin(0, 0);
-        this.door.y = 220;
+        this.particleManager = this.add.particles('cross');
+        this.gravityEmitter = this.particleManager.createEmitter({
+            x: 100,
+            y: 35,
+            // angle: { min: 180, max: 360 }, // try steps: 1000
+            speed: 700,
+            // { min: 1000, max: 5000, steps: 500000 },
+            // gravityY: 350,
+            lifespan: 500,
+            quantity: 20,
+            scale: { start: 20, end: 8 },
+            tint: [ 0x000000,0xFBF036,0x72D572,0x8D6E63,0x4FC3F7 ],
+            on : true,
+        });
+        this.time.delayedCall(10000, ()=>{
+            this.gravityEmitter.stop();
+            this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg11').setOrigin(0, 0);
+            this.door.y = 220;
+            this.door.alpha = 1;
+        });
+
+        this.particleManager.setDepth(99999);
 
     }
 
@@ -286,12 +326,12 @@ class EndLevel extends Phaser.Scene {
         if (this.timer1 > 0) {
             this.timer1 -= 1;
         }
-        if (this.timer1 == 6) {
+        if (this.timer1 == 12) {
             this.cloud1.x = -250;
             this.cloud1.alpha = 0;
         }
         if (this.timer1 == 0) {
-            this.cloud1.x = 250;
+            this.cloud1.x = 270;
             this.cloud1.alpha = 1;
             this.canRefresh1 = true;
         }
@@ -300,14 +340,28 @@ class EndLevel extends Phaser.Scene {
         if (this.timer2 > 0) {
             this.timer2 -= 1;
         }
-        if (this.timer2 == 6) {
+        if (this.timer2 == 12) {
             this.cloud2.x = -250;
             this.cloud2.alpha = 0;
         }
         if (this.timer2 == 0) {
-            this.cloud2.x = 350;
+            this.cloud2.x = 520;
             this.cloud2.alpha = 1;
             this.canRefresh2 = true;
+        }
+    }
+    onEvent3() {
+        if (this.timer3 > 0) {
+            this.timer3 -= 1;
+        }
+        if (this.timer3 == 12) {
+            this.cloud3.x = -250;
+            this.cloud3.alpha = 0;
+        }
+        if (this.timer3 == 0) {
+            this.cloud3.x = 35;
+            this.cloud3.alpha = 1;
+            this.canRefresh3 = true;
         }
     }
 }
@@ -315,8 +369,8 @@ function robotHit(robot, spike) {
     // Set velocity back to 0
     this.robot.setVelocity(0, 0);
     // Put the player back in its original position
-    this.robot.setX(150);
-    this.robot.setY(350);
+    this.robot.setX(80);
+    this.robot.setY(1380);
     // Set the visibility to 0 i.e. hide the player
     this.robot.setAlpha(0);
     // Add a tween that 'blinks' until the player is gradually visible
@@ -331,13 +385,19 @@ function robotHit(robot, spike) {
 
 function cloud1Explode() {
     if (this.canRefresh1) {
-        this.timer1 = 10;
+        this.timer1 = 20;
         this.canRefresh1 = false;
     }
 }
 function cloud2Explode() {
     if (this.canRefresh2) {
-        this.timer2 = 10;
+        this.timer2 = 20;
         this.canRefresh2 = false;
+    }
+}
+function cloud3Explode() {
+    if (this.canRefresh3) {
+        this.timer3 = 20;
+        this.canRefresh3 = false;
     }
 }
