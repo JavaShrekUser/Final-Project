@@ -19,6 +19,8 @@ class Level3 extends Phaser.Scene {
         this.load.tilemapTiledJSON('platform_map3', './assets/Level3/Level3Map-1.json');
         this.load.image('bg6', './assets/Level3/Level3-2.png');
         this.load.spritesheet('green', './assets/Level3/green.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
+        this.load.spritesheet('bounceTuition', './assets/tutorial/bounceTuition.png', { frameWidth: 640, frameHeight: 480, startFrame: 0, endFrame: 4 });
+
 
     }
 
@@ -66,15 +68,14 @@ class Level3 extends Phaser.Scene {
         this.robot.setDepth(99999);
 
         //tutorial
-        this.sign = new Door(this, 420, 300, 'tutorial').setOrigin(0, 0);
+        this.bounceTuition = new Door(this, 0, 0, 'bounceTuition').setOrigin(0, 0);
         this.anims.create({
-            key: 'sign',
+            key: 'bounceTuition',
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('tutorial', {start: 0, end: 3, first: 0}),
-            frameRate: 6
+            frames: this.anims.generateFrameNumbers('bounceTuition', {start: 0, end: 4, first: 0}),
+            frameRate: 2
         });
-        this.sign.setDepth(99999);
-
+        this.bounceTuition.setDepth(99999);
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
 
@@ -146,10 +147,10 @@ class Level3 extends Phaser.Scene {
         this.color.play('gem3',true);
 
         if (this.robot.x >400 && this.robot.x < 500){
-            this.sign.play('sign',true)
-            this.sign.alpha = 1;
+            this.bounceTuition.play('bounceTuition',true)
+            this.bounceTuition.alpha = 1;
         }else{
-            this.sign.alpha = 0;
+            this.bounceTuition.alpha = 0;
         }
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
