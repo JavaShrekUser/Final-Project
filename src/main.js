@@ -23,16 +23,16 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             gravity: {
                 x: 0,
                 y: 0
             }
         }
     },
-    scene: [ Menu, Load, Level1, Level2, Level3, Level4, Level5, EndLevel]
+    scene: [ Menu, Credit, Load, Level1, Level2, Level3, Level4, Level5, EndLevel]
 };
 // reserve keyboard vars
-let keyRIGHT,keyR;
+let keyRIGHT,keyR, keyY,keySPACE;
 
 let game = new Phaser.Game(config);
