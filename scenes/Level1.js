@@ -178,7 +178,6 @@ class Level1 extends Phaser.Scene {
         // check keyboard input
         if (cursors.left.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
-                this.robot.body.setVelocityX(0);
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
@@ -194,7 +193,6 @@ class Level1 extends Phaser.Scene {
 
         } else if (cursors.right.isDown) {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
-                this.robot.body.setVelocityX(0);
                 // play walking sound
                 if (this.robot.body.onFloor()) {
                     this.sound.play('walk');
@@ -218,7 +216,7 @@ class Level1 extends Phaser.Scene {
             }
         }
 
-        // jump & bounce
+        // jump
         if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
