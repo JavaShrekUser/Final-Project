@@ -62,13 +62,21 @@ class EndLevel extends Phaser.Scene {
 
 
         // set up robot
-        this.robot = this.physics.add.sprite(1000, 200, 'player5').setOrigin(0);
+        this.robot = this.physics.add.sprite(80, 1300, 'player5').setOrigin(0);
         this.anims.create({
             key: 'Moving7',
             repeat: -1,
             frames: this.anims.generateFrameNumbers('player6', {start: 0, end: 3, first: 0}),
             frameRate: 6
         });
+
+        this.endanims = new Door(this, 0, 0, 'ending').setOrigin(0, 0);
+        this.anims.create({
+            key: 'lastending',
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('ending', {start: 0, end: 20, first: 0}),
+            frameRate: 2
+        })
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
         this.robot.setDepth(99999);
@@ -135,6 +143,8 @@ class EndLevel extends Phaser.Scene {
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyY = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         //cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
@@ -168,10 +178,17 @@ class EndLevel extends Phaser.Scene {
         // setup camera
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels-20);
         this.cameras.main.startFollow(this.robot, true, 0.25, 0.25);
+
+        this.gameOver = false;
     }
 
     update() {
         this.color.play('gem6',true);
+
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyY)) {
+            game.sound.stopAll();
+            this.scene.start('level1Scene');
+        }
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
@@ -187,7 +204,9 @@ class EndLevel extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
                 // play walking sound
                 if (this.robot.body.onFloor() || this.robot.body.touching.down) {
-                    this.sound.play('walk');
+                    if(this.color.y <440){
+                        this.sound.play('walk');
+                    }
                 }
                 if (this.color.y >400 ){
                     this.robot.play('Moving7',true);
@@ -202,7 +221,9 @@ class EndLevel extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
                 // play walking sound
                 if (this.robot.body.onFloor() || this.robot.body.touching.down) {
-                    this.sound.play('walk');
+                    if(this.color.y <440){
+                        this.sound.play('walk');
+                    }
                 }
                 if (this.color.y >400 ){
                     this.robot.play('Moving7',true);
@@ -225,9 +246,11 @@ class EndLevel extends Phaser.Scene {
 
         // jump & bounce
         if ((this.robot.body.onFloor() || this.robot.body.touching.down)
-            && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+            && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
-            this.sound.play('jump');
+            if(this.color.y <440){
+                this.sound.play('jump');
+            }
         }
 
         if (this.robot.y>960){
@@ -259,12 +282,6 @@ class EndLevel extends Phaser.Scene {
       
         }
 
-        if (this.robot.body.blocked.up) {
-            this.robot.setFlipY(true);
-        } else {
-            this.robot.setFlipY(false);
-        }
-
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity
             this.physics.world.gravity.y = -(this.physics.world.gravity.y);
         }
@@ -290,11 +307,14 @@ class EndLevel extends Phaser.Scene {
         //temporarily hide obstacle
         obstacle.alpha = 0;
         this.color.y = 450;
+        this.MAX_X_VEL = 0;
+        this.ACCELERATION = 0;
+        this.JUMP_VELOCITY = 0;
         this.sound.play('levelup');
         this.particleManager = this.add.particles('cross');
         this.gravityEmitter = this.particleManager.createEmitter({
-            x: 100,
-            y: 35,
+            x: 310,
+            y: 99,
             // angle: { min: 180, max: 360 }, // try steps: 1000
             speed: 700,
             // { min: 1000, max: 5000, steps: 500000 },
@@ -302,14 +322,21 @@ class EndLevel extends Phaser.Scene {
             lifespan: 500,
             quantity: 20,
             scale: { start: 20, end: 8 },
-            tint: [ 0x000000,0xFBF036,0x72D572,0x8D6E63,0x4FC3F7 ],
+            tint: [ 0x000000,0xFBF036,0x72D572,0x8D6E63,0x4FC3F7,0xFF0000 ],
             on : true,
         });
         this.time.delayedCall(10000, ()=>{
             this.gravityEmitter.stop();
+            this.door.y = 220;
+            this.door.alpha = 1;
+        });
+        this.time.delayedCall(5000, ()=>{
             this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg11').setOrigin(0, 0);
             this.door.y = 220;
             this.door.alpha = 1;
+            this.endanims.play('lastending',true);
+            this.endanims.setDepth(100000);
+            this.gameOver = true;
         });
 
         this.particleManager.setDepth(99999);

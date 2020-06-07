@@ -89,6 +89,7 @@ class Level5 extends Phaser.Scene {
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.spikes = this.physics.add.group({
             allowGravity: false,
@@ -188,7 +189,7 @@ class Level5 extends Phaser.Scene {
         }
 
         // jump & bounce
-        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(keySPACE))  {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
@@ -205,12 +206,6 @@ class Level5 extends Phaser.Scene {
             this.sound.play('bounce');
         } else if (this.robot.body.onFloor()) {
             this.canJump = true;
-        }
-
-        if (this.robot.body.blocked.up){
-            this.robot.setFlipY(true);
-        } else {
-            this.robot.setFlipY(false);
         }
 
         if (Phaser.Input.Keyboard.JustDown(keyR)) {     //é‡åŠ›åè½¬ invers the gravity

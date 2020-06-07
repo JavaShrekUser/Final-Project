@@ -121,6 +121,7 @@ class Level1 extends Phaser.Scene {
 
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.spikes = this.physics.add.group({
             allowGravity: false,
@@ -178,13 +179,10 @@ class Level1 extends Phaser.Scene {
 
         if (this.robot.x >337 && this.robot.x < 415){
             this.jumpTuition.play('jumpTuition',true)
-            this.jumpTuition.alpha = 1;
+            
         }else{
             this.jumpTuition.alpha = 0;
         }
-        this.color.play('gem1',true);
-
-        
 
         // check collisions
         if (this.checkCollision(this.robot, this.color)) {
@@ -239,7 +237,7 @@ class Level1 extends Phaser.Scene {
         }
 
         // jump & bounce
-        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(cursors.up)) {
+        if (this.robot.body.onFloor() && Phaser.Input.Keyboard.JustDown(keySPACE)) {
             this.robot.body.setVelocityY(this.JUMP_VELOCITY);
             this.sound.play('jump');
         }
@@ -284,6 +282,7 @@ class Level1 extends Phaser.Scene {
             this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
             this.door.y = 356;
             this.door.alpha = 1;
+            this.jumpTuition.alpha = 1;
         });
 
         this.particleManager.setDepth(99999);

@@ -67,15 +67,19 @@ class Menu extends Phaser.Scene {
         this.add.text(centerX, centerY - 60, 'Press ← → to move and "↑" to jump', menuConfig).setOrigin(0.5);
         this.add.text(centerX, centerY - 50 + textSpacer, 'Collect Color Squares And Go To The Door', guideConfig).setOrigin(0.5);
         this.add.text(centerX, centerY + 10 + textSpacer, 'Press → to start the game', menuConfig).setOrigin(0.5);
+        this.add.text(centerX, centerY + 60 + textSpacer, 'Press ← to start the credit scene', menuConfig).setOrigin(0.5);
 
         // define keys
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        cursors = this.input.keyboard.createCursorKeys();
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-            // this.sound.play('sfx_select');
+        if (Phaser.Input.Keyboard.JustDown(cursors.right)) {
             this.scene.start('loadScene');
         }
+        if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
+            this.scene.start('creditScene');
+        }
+
     }
 }

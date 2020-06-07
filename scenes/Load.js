@@ -33,6 +33,7 @@ class Load extends Phaser.Scene {
         // load endlevel assets
         this.load.path = "assets/EndLevel/";
         this.load.image('bg11', 'EndLevel.png');
+        this.load.spritesheet('ending', 'EndAnimation.png', { frameWidth: 640, frameHeight: 480, startFrame: 0, endFrame: 20 });
         //color explode
         this.load.path = './assets/';
         this.load.image('cross', 'white_pixel.png');
