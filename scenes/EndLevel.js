@@ -7,6 +7,7 @@ class EndLevel extends Phaser.Scene {
         // this.load.image('brown', './assets/Level4/brown.png');  // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
+        this.load.audio('die', './assets/sound/Die.mp3');
         this.load.image('doorEnd','./assets/EndLevel/doorEnd.png');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
@@ -53,7 +54,6 @@ class EndLevel extends Phaser.Scene {
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'EndLevel', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
         this.add.text(game.config.width / 2, 50, 'End', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5).setDepth(99998);
-        this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
         this.BotBack1 = this.add.tileSprite(0, 980 , 640, 480, 'EndLevelCoverTop1').setOrigin(0, 0).setDepth(99999);
         this.BotBack2 = this.add.tileSprite(0, 980, 640, 480, 'EndLevelCoverBot1').setOrigin(0, 0).setDepth(99999);
@@ -75,7 +75,7 @@ class EndLevel extends Phaser.Scene {
             key: 'lastending',
             repeat: 0,
             frames: this.anims.generateFrameNumbers('ending', {start: 0, end: 20, first: 0}),
-            frameRate: 3
+            frameRate: 2
         })
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
@@ -395,6 +395,7 @@ class EndLevel extends Phaser.Scene {
 function robotHit(robot, spike) {
     // Set velocity back to 0
     this.robot.setVelocity(0, 0);
+    this.sound.play('die');
     // Put the player back in its original position
     this.robot.setX(80);
     this.robot.setY(1380);

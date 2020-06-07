@@ -14,7 +14,6 @@ class Level1 extends Phaser.Scene {
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles", "./assets/MainTiledSet.png");
-        this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map', './assets/Level1/Level1Map.json');
         this.load.spritesheet('black', './assets/Level1/black.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
         this.load.spritesheet('walkTuition', './assets/tutorial/walkTuition.png', { frameWidth: 640, frameHeight: 480, startFrame: 0, endFrame: 3 });
@@ -42,10 +41,8 @@ class Level1 extends Phaser.Scene {
 
         // create tilemap layers
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0);
-        // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true });
-
 
         // variables and settings
         this.ACCELERATION = 650;
@@ -97,7 +94,7 @@ class Level1 extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('jumpTuition', {start: 0, end: 1, first: 0}),
             frameRate: 2
         });
-        this.jumpTuition.setDepth(99999);
+        this.jumpTuition.setDepth(99998);
         
         // add physics collider
         this.physics.add.collider(this.robot, platforms);
@@ -112,31 +109,14 @@ class Level1 extends Phaser.Scene {
         });
         this.color.setDepth(99999);
         
-
         //door
         this.door = new Door(this, 580, 0, 'door1').setOrigin(0, 0);
         this.door.setDepth(99999);
         this.door.alpha = 0;
         
-
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        this.spikes = this.physics.add.group({
-            allowGravity: false,
-            immovable: true
-        });
-
-        const spikeObjects = map.getObjectLayer('Trap')['objects'];
-
-        spikeObjects.forEach(spikeObject => {
-            // Add new spikes to our sprite group
-            const spike = this.spikes.create(spikeObject.x + 18, spikeObject.y, 'Trap').setOrigin(1, 1);
-
-            this.physics.add.collider(this.robot, this.spikes, robotHit, null, this);
-
-        });
 
         //cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
@@ -169,7 +149,7 @@ class Level1 extends Phaser.Scene {
     }
 
     update() {
-        if (this.robot.x >95 && this.robot.x < 105){
+        if (this.robot.x >95 && this.robot.x < 135){
             this.walkTuition.play('walkTuition',true)
             this.walkTuition.alpha = 1;
         }else{
@@ -178,8 +158,10 @@ class Level1 extends Phaser.Scene {
         this.color.play('gem1',true);
 
         if (this.robot.x >337 && this.robot.x < 415){
-            this.jumpTuition.play('jumpTuition',true)
-            
+            if(this.color.y>400){
+                this.jumpTuition.play('jumpTuition',true) 
+                this.jumpTuition.alpha = 1;             
+            } 
         }else{
             this.jumpTuition.alpha = 0;
         }
@@ -267,10 +249,7 @@ class Level1 extends Phaser.Scene {
         this.gravityEmitter = this.particleManager.createEmitter({
             x: 380,
             y: 400,
-            // angle: { min: 180, max: 360 }, // try steps: 1000
             speed: 1500,
-            // { min: 1000, max: 5000, steps: 500000 },
-            // gravityY: 350,
             lifespan: 3000,
             quantity: 50,
             scale: { start: 100, end: 8 },
@@ -282,8 +261,9 @@ class Level1 extends Phaser.Scene {
             this.mainBack = this.add.tileSprite(0, 0, 640, 480, 'bg3').setOrigin(0, 0);
             this.door.y = 356;
             this.door.alpha = 1;
-            this.jumpTuition.alpha = 1;
+            
         });
+        
 
         this.particleManager.setDepth(99999);
 
@@ -298,21 +278,4 @@ class Level1 extends Phaser.Scene {
         
 
     }
-}
-function robotHit(robot, spike) {
-    // Set velocity back to 0
-    this.robot.setVelocity(0, 0);
-    // Put the player back in its original position
-    this.robot.setX(260);
-    this.robot.setY(300);
-    // Set the visibility to 0 i.e. hide the player
-    this.robot.setAlpha(0);
-    // Add a tween that 'blinks' until the player is gradually visible
-    let tw = this.tweens.add({
-        targets: this.robot,
-        alpha: 1,
-        duration: 100,
-        ease: 'Linear',
-        repeat: 5,
-    });
 }

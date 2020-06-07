@@ -13,7 +13,6 @@ class Level4 extends Phaser.Scene {
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles4", "./assets/MainTiledSet.png");
-        this.load.image('Trap', './assets/Trap.png');
         this.load.image("Level4CoverTop","./assets/Level4/Level4CoverTop.png");
         this.load.image("Level4CoverBot1","./assets/Level4/Level4CoverBot1.png");
         this.load.image("Level4CoverBot2","./assets/Level4/Level4CoverBot2.png");
@@ -34,11 +33,8 @@ class Level4 extends Phaser.Scene {
 
         // create tilemap layers
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99997);
-        // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true});
-
-        // trapLayer.setCollisionByExclusion(-1,true);
 
         // variables and settings
         this.ACCELERATION = 650;
@@ -50,7 +46,6 @@ class Level4 extends Phaser.Scene {
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level4', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
-        this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
         this.mainBack2 = this.add.tileSprite(0, 0, 640, 480, 'Level4CoverBot1').setOrigin(0, 0).setDepth(99999);
         this.mainBack1 = this.add.tileSprite(0, 0, 640, 480, 'Level4CoverTop').setOrigin(0, 0).setDepth(2);
@@ -90,21 +85,6 @@ class Level4 extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        this.spikes = this.physics.add.group({
-            allowGravity: false,
-            immovable: true
-        });
-
-        const spikeObjects = map.getObjectLayer('Trap')['objects'];
-
-        spikeObjects.forEach(spikeObject => {
-            // Add new spikes to our sprite group
-            const spike = this.spikes.create(spikeObject.x + 18, spikeObject.y, 'Trap').setOrigin(1, 1);
-
-            this.physics.add.collider(this.robot, this.spikes, robotHit, null, this);
-
-        });
 
         //cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
@@ -268,22 +248,4 @@ class Level4 extends Phaser.Scene {
 
     }
 
-
-}
-function robotHit(robot, spike) {
-    // Set velocity back to 0
-    this.robot.setVelocity(0, 0);
-    // Put the player back in its original position
-    this.robot.setX(150);
-    this.robot.setY(350);
-    // Set the visibility to 0 i.e. hide the player
-    this.robot.setAlpha(0);
-    // Add a tween that 'blinks' until the player is gradually visible
-    let tw = this.tweens.add({
-        targets: this.robot,
-        alpha: 1,
-        duration: 100,
-        ease: 'Linear',
-        repeat: 5,
-    });
 }

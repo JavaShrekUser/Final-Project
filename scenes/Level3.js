@@ -36,11 +36,8 @@ class Level3 extends Phaser.Scene {
 
         // create tilemap layers
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99998);
-        // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true});
-
-        // trapLayer.setCollisionByExclusion(-1,true);
 
         // variables and settings
         this.ACCELERATION = 650;
@@ -52,8 +49,6 @@ class Level3 extends Phaser.Scene {
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level3', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
-        this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
-
 
         // set up robot
         this.robot = this.physics.add.sprite(150, 350, 'player2').setOrigin(0);
@@ -98,21 +93,6 @@ class Level3 extends Phaser.Scene {
         cursors = this.input.keyboard.createCursorKeys();
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        this.spikes = this.physics.add.group({
-            allowGravity: false,
-            immovable: true
-        });
-
-        const spikeObjects = map.getObjectLayer('Trap')['objects'];
-
-        spikeObjects.forEach(spikeObject => {
-            // Add new spikes to our sprite group
-            const spike = this.spikes.create(spikeObject.x + 18, spikeObject.y, 'Trap').setOrigin(1, 1);
-
-            this.physics.add.collider(this.robot, this.spikes, robotHit, null, this);
-
-        });
 
         //cheater for debugging
         this.input.keyboard.on('keydown', (event) => {
@@ -288,22 +268,4 @@ class Level3 extends Phaser.Scene {
 
     }
 
-
-}
-function robotHit(robot, spike) {
-    // Set velocity back to 0
-    this.robot.setVelocity(0, 0);
-    // Put the player back in its original position
-    this.robot.setX(260);
-    this.robot.setY(300);
-    // Set the visibility to 0 i.e. hide the player
-    this.robot.setAlpha(0);
-    // Add a tween that 'blinks' until the player is gradually visible
-    let tw = this.tweens.add({
-        targets: this.robot,
-        alpha: 1,
-        duration: 100,
-        ease: 'Linear',
-        repeat: 5,
-    });
 }

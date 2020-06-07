@@ -13,7 +13,6 @@ class Level2 extends Phaser.Scene {
         this.load.audio('bounce', './assets/sound/Bounce.mp3');
         this.load.audio('door', './assets/sound/DoorOpen.mp3');
         this.load.image("1bit_tiles2", "./assets/MainTiledSet.png");
-        this.load.image('Trap', './assets/Trap.png');
         this.load.tilemapTiledJSON('platform_map2', './assets/Level2/Level2Map-2.json');
         this.load.image('bg4', './assets/Level2/Level2-2.png');
         this.load.spritesheet('yellow', './assets/Level2/yellow.png', { frameWidth: 20, frameHeight: 50, startFrame: 0, endFrame: 11 });
@@ -32,12 +31,9 @@ class Level2 extends Phaser.Scene {
 
         // create tilemap layers
         const platforms = map.createStaticLayer("Platforms", tileset, 0, 0).setDepth(99999);;
-        // const trapLayer = map.createStaticLayer("Trap", tileset, 0, 0);
 
         platforms.setCollisionByProperty({ collides: true });
-
-        // trapLayer.setCollisionByExclusion(-1,true);
-
+        
         // variables and settings
         this.ACCELERATION = 650;
         this.MAX_X_VEL = 220;   // pixels/second
@@ -48,11 +44,8 @@ class Level2 extends Phaser.Scene {
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level2', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99998);
-        this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
-
 
         // set up robot
-        
         this.robot = this.physics.add.sprite(150, 350, 'player1').setOrigin(0);
 
         this.anims.create({

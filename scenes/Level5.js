@@ -7,6 +7,7 @@ class Level5 extends Phaser.Scene {
         // preload assets
         this.load.audio('choco', './assets/sound/BGM.mp3');
         this.load.audio('walk', './assets/sound/Walk.mp3');
+        this.load.audio('die', './assets/sound/Die.mp3');
         this.load.image('door5','./assets/Level5/door5.png');
         this.load.audio('jump', './assets/sound/Jump.mp3');
         this.load.audio('levelup', './assets/sound/LevelUp.mp3');
@@ -50,7 +51,6 @@ class Level5 extends Phaser.Scene {
 
         // print Scene name
         this.add.text(game.config.width / 2, 30, 'level5', { font: '14px Futura', fill: '#32CD32' }).setOrigin(0.5).setDepth(99999);
-        this.add.text(120, 10, 'Press R to inverse your gravity', { font: '14px Futura', fill: '#00000' }).setOrigin(0.5);
 
         this.mainBack1 = this.add.tileSprite(0, 0, 640, 480, 'Level5CoverTop').setOrigin(0, 0).setDepth(99999);
         this.mainBack2 = this.add.tileSprite(0, 0, 640, 480, 'Level5CoverBot').setOrigin(0, 0).setDepth(99999);
@@ -271,6 +271,7 @@ class Level5 extends Phaser.Scene {
 function robotHit1(robot, spike) {
     // Set velocity back to 0
     this.robot.setVelocity(0, 0);
+    this.sound.play('die');
     // Put the player back in its original position
     this.robot.setX(100);
     this.robot.setY(350);
