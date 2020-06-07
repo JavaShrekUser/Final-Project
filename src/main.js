@@ -1,10 +1,14 @@
 /*
-Main Programmer:          
+
+Team: JavaSherkProgrammer
+
+Programmer:          
 Abudula Aisikaer
 Zihan Guo
 
-Art and a little Program: 
+Artist & Designer: 
 Logan Park 
+
 */
 
 "use strict";
@@ -23,7 +27,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false,
+            debug: true,
             gravity: {
                 x: 0,
                 y: 0
