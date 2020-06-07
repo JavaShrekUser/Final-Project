@@ -75,7 +75,7 @@ class EndLevel extends Phaser.Scene {
             key: 'lastending',
             repeat: 0,
             frames: this.anims.generateFrameNumbers('ending', {start: 0, end: 20, first: 0}),
-            frameRate: 2
+            frameRate: 3
         })
         this.robot.setMaxVelocity(this.MAX_X_VEL, this.MAX_Y_VEL);
         this.robot.setCollideWorldBounds(true);
