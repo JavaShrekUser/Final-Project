@@ -316,13 +316,13 @@ class EndLevel extends Phaser.Scene {
             x: 310,
             y: 99,
             // angle: { min: 180, max: 360 }, // try steps: 1000
-            speed: 700,
+            speed: 300,
             // { min: 1000, max: 5000, steps: 500000 },
             // gravityY: 350,
-            lifespan: 500,
-            quantity: 20,
-            scale: { start: 20, end: 8 },
-            tint: [ 0x000000,0xFBF036,0x72D572,0x8D6E63,0x4FC3F7,0xFF0000 ],
+            lifespan: 1300,
+            quantity: 6,
+            scale: { start: 9, end: 23 },
+            tint: [0xFBF036,0x72D572,0x4FC3F7,0xFF0000, 0xFFFD2A, 0xFF9D11 ],
             on : true,
         });
         this.time.delayedCall(10000, ()=>{
